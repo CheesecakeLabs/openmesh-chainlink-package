@@ -48,6 +48,11 @@
             self.packages.${system}.chainlink
             nixpkgsFor.${system}.go
             nixpkgsFor.${system}.git
+            nixpkgsFor.${system}.python3
+            nixpkgsFor.${system}.postgresql_16
+            nixpkgsFor.${system}.nodejs
+            nixpkgsFor.${system}.pnpm
+            nixpkgsFor.${system}.which
           ];
         }
       );
