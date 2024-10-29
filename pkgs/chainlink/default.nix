@@ -14,7 +14,7 @@ buildGoModule rec {
 
   # Vendor dependencies to avoid network access during the build
   proxyVendor = true;
-  vendorHash = "";  # Replace with correct hash
+  vendorHash = "sha256-fb3DlXdrQw0NBKiOkblcModtLg4zDkBx+AKz/4vcFEY=";  # Replace with correct hash
 
   # Disable tests for now; can be enabled if needed
   doCheck = false;
