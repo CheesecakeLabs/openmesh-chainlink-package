@@ -28,8 +28,8 @@ buildGoModule rec {
     postgresql_16  # PostgreSQL for database interactions
     nodejs  # Node.js v20 for required JS tooling
     pnpm  # pnpm v9 for package management
-    toybox  # Toybox for additional tools
     coreutils  # Coreutils for basic utilities
+    toybox  # Toybox for additional tools
   ];
 
   # Build phase following the provided guide

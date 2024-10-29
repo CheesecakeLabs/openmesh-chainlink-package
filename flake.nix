@@ -31,10 +31,10 @@
             postgresql_16 = pkgs.postgresql_16;
             nodejs = pkgs.nodejs;
             pnpm = pkgs.pnpm;
+            coreutils = pkgs.coreutils;
             toybox = pkgs.toybox;
             libobjc = pkgs.darwin.libobjc;
             IOKit = pkgs.darwin.IOKit;
-            coreutils = pkgs.coreutils;
           };
         }
       );
