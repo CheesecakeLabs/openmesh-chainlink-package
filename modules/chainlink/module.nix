@@ -1,13 +1,12 @@
-with import <nixpkgs> {};
+{ config, lib, pkgs, ... }:
 
 let
   eachChainlink = config.services.chainlink;
 
-  chainlinkOpts = { config, lib, name, pkgs, ... }: {
+  chainlinkOpts = { config, lib, name, ... }: {
     options = {
       enable = lib.mkEnableOption "Chainlink Node";
 
-      # Chainlink specific options
       jsonOutput = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -45,7 +44,7 @@ let
       };
 
       bridgeURL = lib.mkOption {
-        type = lib.types.str;
+        type = lib.types.nullOr lib.types.str;
         default = null;
         description = "URL of the bridge to connect with.";
       };
@@ -56,57 +55,65 @@ let
         description = "Additional arguments to pass to the Chainlink CLI.";
       };
 
-      package = lib.mkOption {
-        type = lib.types.str;
-        default = "chainlink";
-        description = "Chainlink package name.";
-      };
-    };
-
-    config = lib.mkIf config.enable {
-      environment.systemPackages = [ pkgs.chainlink ];
-
-      systemd.services = {
-        "chainlink-node" = {
-          description = "Chainlink Node Service";
-          after = [ "network.target" ];
-          wantedBy = [ "multi-user.target" ];
-
-          serviceConfig = {
-            ExecStart = "${pkgs.chainlink}/bin/chainlink node start \
-              --config ${config.dataDir}/config.toml \
-              ${if config.jsonOutput then "--json" else ""} \
-              --log-level ${toString config.verbosity} \
-              --keystore ${config.keystorePath} \
-              --password ${config.passwordFile} \
-              --eth-url ${config.ethereumURL} \
-              ${optionalString (config.bridgeURL != null) "--bridge-url ${config.bridgeURL}"} \
-              ${lib.concatStringsSep " " config.extraArgs}";
-            Restart = "always";
-            User = "chainlink";
-            Group = "chainlink";
-            Environment = "CHAINLINK_DATA_DIR=${config.dataDir}";
-            PrivateTmp = true;
-            ProtectSystem = "full";
-            NoNewPrivileges = true;
-            MemoryDenyWriteExecute = true;
-          };
-        };
-      };
+      package = lib.mkPackageOption pkgs [ "chainlink" ] { };
     };
   };
-in
 
-{
+in {
+  ###### Interface
   options = {
     services.chainlink = lib.mkOption {
       type = lib.types.attrsOf (lib.types.submodule chainlinkOpts);
       default = {};
-      description = "Configuration for Chainlink Node services.";
+      description = "Configuration for one or more Chainlink node instances.";
     };
   };
 
+  ###### Implementation
   config = lib.mkIf (eachChainlink != {}) {
-    services.chainlink = eachChainlink;
+
+    environment.systemPackages = lib.flatten (lib.mapAttrsToList (name: cfg: [
+      cfg.package
+    ]) eachChainlink);
+
+    systemd.services = lib.mapAttrs' (name: cfg: let
+      stateDir = "chainlink/${name}";
+      dataDir = "/var/lib/${stateDir}";
+    in (
+      lib.nameValuePair "chainlink-${name}" (lib.mkIf cfg.enable {
+        description = "Chainlink Node (${name})";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+
+        serviceConfig = {
+          ExecStart = ''
+            ${cfg.package}/bin/chainlink node start \
+              --config ${dataDir}/config.toml \
+              ${if cfg.jsonOutput then "--json" else ""} \
+              --log-level ${toString cfg.verbosity} \
+              --keystore ${cfg.keystorePath} \
+              --password ${cfg.passwordFile} \
+              --eth-url ${cfg.ethereumURL} \
+              ${lib.optionalString (cfg.bridgeURL != null) "--bridge-url ${cfg.bridgeURL}"} \
+              ${lib.concatStringsSep " " cfg.extraArgs}
+          '';
+          DynamicUser = true;
+          Restart = "always";
+          RestartSec = 5;
+          StateDirectory = stateDir;
+
+          # Hardening options
+          PrivateTmp = true;
+          ProtectSystem = "full";
+          NoNewPrivileges = true;
+          PrivateDevices = true;
+          MemoryDenyWriteExecute = true;
+          StandardOutput = "journal";
+          StandardError = "journal";
+          User = "chainlink";
+        };
+      })
+    )) eachChainlink;
   };
 }

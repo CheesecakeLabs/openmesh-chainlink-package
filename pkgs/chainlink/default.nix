@@ -1,69 +1,63 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ lib, stdenv, buildGoModule, fetchFromGitHub, git, python3, postgresql_16, nodejs, pnpm, libobjc, IOKit }:
 
-let
-  goVersion = "1.22";
-  nodeVersion = "20.0.0";
-in
-pkgs.mkShell {
-  name = "chainlink-node-env";
+buildGoModule rec {
+  pname = "chainlink";
+  version = "2.17.0";  # Example version, update as needed
 
-  buildInputs = with pkgs; [
-    # Go programming language
-    (pkgs.go_1_22.overrideAttrs (old: {
-      postInstall = ''
-        export GOPATH=$HOME/go
-        export PATH=$GOPATH/bin:$PATH
-      '';
-    }))
+  # Fetch the Chainlink source code from GitHub
+  src = fetchFromGitHub {
+    owner = "smartcontractkit";
+    repo = "chainlink";
+    rev = "v${version}";
+    sha256 = "0dyhs7g95abbn3r43camlwwwxnnm9xd3k8v13hkrr25cqw9ggfsi";  # Replace with correct hash using nix-prefetch-url
+  };
 
-    # Node.js v20 and pnpm v9
-    (pkgs.nodejs.overrideAttrs (oldAttrs: rec {
-      version = nodeVersion;
-    }))
-    pnpm
+  # Vendor dependencies to avoid network access during the build
+  proxyVendor = true;
+  vendorHash = "sha256-XXXXXXXXXXX";  # Replace with correct hash
 
-    # PostgreSQL (12.x or later, selecting 16.x)
-    postgresql_16
+  # Disable tests for now; can be enabled if needed
+  doCheck = false;
 
-    # Python 3 for solc-select
-    python3
+  outputs = [ "out" ];
 
-    # Git to clone Chainlink
-    git
+  # Include necessary dependencies
+  nativeBuildInputs = [
+    git  # To clone the repository and fetch dependencies
+    python3  # Python required by solc-select
+    postgresql_16  # PostgreSQL for database interactions
+    nodejs  # Node.js v20 for required JS tooling
+    pnpm  # pnpm v9 for package management
   ];
 
-  shellHook = ''
-    echo "Starting Chainlink Node Setup..."
-
-    # Set GOPATH and add Go binaries to PATH
-    export GOPATH=$HOME/go
-    export PATH=$GOPATH/bin:$PATH
-
-    # Set up Node.js via nvm
-    export NODE_VERSION=${nodeVersion}
-    if ! command -v nvm &> /dev/null; then
-      echo "Installing nvm..."
-      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-      export NVM_DIR="$HOME/.nvm"
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-    fi
-    nvm install $NODE_VERSION
-    nvm use $NODE_VERSION
-
-    # Install pnpm
-    npm install -g pnpm@9
-
-    # Clone Chainlink repository
-    if [ ! -d "chainlink" ]; then
-      git clone https://github.com/smartcontractkit/chainlink.git
-    fi
-    cd chainlink
-
-    # Build Chainlink node
+  # Build phase following the provided guide
+  buildPhase = ''
     echo "Building Chainlink..."
     make install
-
-    echo "Chainlink built successfully. Run the node with: chainlink help"
   '';
+
+  # Installation phase
+  installPhase = ''
+    echo "Installing Chainlink binaries..."
+    mkdir -p $out/bin
+    cp ./bin/chainlink $out/bin/chainlink
+  '';
+
+  # Platform-specific fixes for macOS
+  propagatedBuildInputs = lib.optionals stdenv.isDarwin [ libobjc IOKit ];
+
+  # Environment setup to ensure Go paths are correctly set
+  shellHook = ''
+    export GOPATH=$HOME/go
+    export PATH=$GOPATH/bin:$PATH
+    echo "GOPATH set to $GOPATH"
+  '';
+
+  # Package metadata
+  meta = with lib; {
+    description = "Chainlink is a decentralized oracle network.";
+    homepage = "https://github.com/smartcontractkit/chainlink";
+    license = with licenses; [ mit ];
+    maintainers = with maintainers; [ "brunonascdev" ];
+  };
 }
