@@ -52,7 +52,6 @@
             nixpkgsFor.${system}.postgresql_16
             nixpkgsFor.${system}.nodejs
             nixpkgsFor.${system}.pnpm
-            nixpkgsFor.${system}.toybox
           ];
         }
       );
