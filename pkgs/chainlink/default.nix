@@ -32,6 +32,9 @@ buildGoModule rec {
 
   # Build phase following the provided guide
   buildPhase = ''
+    # this line removes a bug where value of $HOME is set to a non-writable /homeless-shelter dir
+    export HOME=$(pwd)
+
     echo "Setting NPM strict-ssl to false for this build..."
     npm config set strict-ssl false
 
