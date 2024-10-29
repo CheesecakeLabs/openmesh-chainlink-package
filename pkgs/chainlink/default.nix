@@ -1,4 +1,4 @@
-{ lib, stdenv, buildGoModule, fetchFromGitHub, git, python3, postgresql_16, nodejs, pnpm, libobjc, IOKit, toybox, coreutils }:
+{ lib, stdenv, buildGoModule, fetchFromGitHub, git, python3, postgresql_16, nodejs, pnpm, libobjc, IOKit, toybox, coreutils, jq }:
 
 buildGoModule rec {
   pname = "chainlink";
@@ -30,6 +30,7 @@ buildGoModule rec {
     pnpm  # pnpm v9 for package management
     coreutils  # Coreutils for basic utilities
     toybox  # Toybox for additional tools
+    jq  # jq for JSON processing
   ];
 
   # Build phase following the provided guide

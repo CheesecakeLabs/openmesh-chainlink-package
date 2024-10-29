@@ -35,6 +35,7 @@
             toybox = pkgs.toybox;
             libobjc = pkgs.darwin.libobjc;
             IOKit = pkgs.darwin.IOKit;
+            jq = pkgs.jq;
           };
         }
       );
@@ -53,6 +54,9 @@
             nixpkgsFor.${system}.postgresql_16
             nixpkgsFor.${system}.nodejs
             nixpkgsFor.${system}.pnpm
+            nixpkgsFor.${system}.coreutils
+            nixpkgsFor.${system}.toybox
+            nixpkgsFor.${system}.jq
           ];
         }
       );
