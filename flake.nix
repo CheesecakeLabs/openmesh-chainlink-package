@@ -26,6 +26,11 @@
             stdenv = pkgs.stdenv;
             buildGoModule = pkgs.buildGoModule;
             fetchFromGitHub = pkgs.fetchFromGitHub;
+            git = pkgs.git;
+            python3 = pkgs.python3;
+            postgresql_16 = pkgs.postgresql_16;
+            nodejs = pkgs.nodejs;
+            pnpm = pkgs.pnpm;
             libobjc = pkgs.darwin.libobjc;
             IOKit = pkgs.darwin.IOKit;
           };
