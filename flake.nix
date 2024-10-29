@@ -34,6 +34,7 @@
             toybox = pkgs.toybox;
             libobjc = pkgs.darwin.libobjc;
             IOKit = pkgs.darwin.IOKit;
+            coreutils = pkgs.coreutils;
           };
         }
       );
