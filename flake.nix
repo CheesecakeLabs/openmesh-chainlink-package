@@ -31,6 +31,7 @@
             postgresql_16 = pkgs.postgresql_16;
             nodejs = pkgs.nodejs;
             pnpm = pkgs.pnpm;
+            which = pkgs.which;
             libobjc = pkgs.darwin.libobjc;
             IOKit = pkgs.darwin.IOKit;
           };
