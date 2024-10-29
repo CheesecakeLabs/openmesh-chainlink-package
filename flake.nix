@@ -31,7 +31,7 @@
             postgresql_16 = pkgs.postgresql_16;
             nodejs = pkgs.nodejs;
             pnpm = pkgs.pnpm;
-            which = pkgs.which;
+            toybox = pkgs.toybox;
             libobjc = pkgs.darwin.libobjc;
             IOKit = pkgs.darwin.IOKit;
           };
@@ -52,7 +52,7 @@
             nixpkgsFor.${system}.postgresql_16
             nixpkgsFor.${system}.nodejs
             nixpkgsFor.${system}.pnpm
-            nixpkgsFor.${system}.which
+            nixpkgsFor.${system}.toybox
           ];
         }
       );
