@@ -9,7 +9,7 @@ buildGoModule rec {
     owner = "brunonascdev";
     repo = "gencodec";
     rev = "master";  # Use a specific commit/tag if needed
-    sha256 = "sha256-WTSF2r4ydERI/nyl6raBpRw9Y/r4w1AZ+wuBDgGbR2o=";  # Replace with the correct hash from prefetch
+    sha256 = "sha256-04TfKllFT/TFF5h6d6RiJoF7/F0JR5UC7OEZDysJ0ls=";  # Replace with the correct hash from prefetch
   };
 
   vendorHash = null;
@@ -34,13 +34,6 @@ buildGoModule rec {
   installPhase = ''
     mkdir -p $out/bin
     cp gencodec $out/bin/
-
-    # start go.mod
-    mkdir -p $out/src/github.com/brunonascdev/gencodec
-    cp -r . $out/src/github.com/brunonascdev/gencodec
-    cd $out/src/github.com/brunonascdev/gencodec
-    go mod init github.com/brunonascdev/gencodec
-    go mod tidy
   '';
 
   # Optional metadata
