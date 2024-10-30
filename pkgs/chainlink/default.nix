@@ -1,5 +1,19 @@
-{ lib, stdenv, buildGoModule, buildGoPackage, fetchFromGitHub, git, python3, postgresql_16, nodejs, pnpm, libobjc, IOKit, toybox, coreutils, jq, gnumake }:
+{ pkgs, lib, stdenv, buildGoModule, buildGoPackage, fetchFromGitHub, git, python3, libobjc, IOKit, toybox, coreutils, jq, gnumake, gencodec }:
+with pkgs; let
+  go = go_1_21;
+  postgresql = postgresql_14;
+  nodejs = nodejs-18_x;
+  nodePackages = pkgs.nodePackages.override {inherit nodejs;};
+  pnpm = pnpm_9;
 
+  mkShell' = mkShell.override {
+    # The current nix default sdk for macOS fails to compile go projects, so we use a newer one for now.
+    stdenv =
+      if stdenv.isDarwin
+      then overrideSDK stdenv "11.0"
+      else stdenv;
+  };
+in
 buildGoModule rec {
   pname = "chainlink";
   version = "2.17.0";  # Example version, update as needed
@@ -31,6 +45,7 @@ buildGoModule rec {
     toybox  # Toybox for additional tools
     jq  # jq for JSON processing
     gnumake  # GNU Make for building
+    gencodec  # gencodec for Go code generation
   ];
 
   # Build phase following the provided guide
@@ -44,10 +59,11 @@ buildGoModule rec {
 
   # Installation phase
   installPhase = ''
+    which gencodec
     make install
-    echo "Installing Chainlink binaries..."
-    mkdir -p $out/bin
-    cp ./bin/chainlink $out/bin/chainlink
+    # echo "Installing Chainlink binaries..."
+    # mkdir -p $out/bin
+    # cp ./bin/chainlink $out/bin/chainlink
   '';
 
   # Platform-specific fixes for macOS

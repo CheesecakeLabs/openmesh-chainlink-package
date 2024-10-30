@@ -22,41 +22,39 @@
           pkgs = nixpkgsFor.${system};
         in {
           gencodec = import ./pkgs/gencodec/default.nix {
+            pkgs = pkgs;
             lib = pkgs.lib;
             buildGoModule = pkgs.buildGoModule;
             fetchFromGitHub = pkgs.fetchFromGitHub;
-            git = pkgs.git;
-            openssl_3_3 = pkgs.openssl_3_3;
           };
-          # chainlink = import ./pkgs/chainlink/default.nix {
-          #   lib = pkgs.lib;
-          #   stdenv = pkgs.stdenv;
-          #   buildGoModule = pkgs.buildGoModule;
-          #   buildGoPackage = pkgs.buildGoPackage;
-          #   fetchFromGitHub = pkgs.fetchFromGitHub;
-          #   git = pkgs.git;
-          #   python3 = pkgs.python3;
-          #   postgresql_16 = pkgs.postgresql_16;
-          #   nodejs = pkgs.nodejs;
-          #   pnpm = pkgs.pnpm;
-          #   coreutils = pkgs.coreutils;
-          #   toybox = pkgs.toybox;
-          #   libobjc = pkgs.darwin.libobjc;
-          #   IOKit = pkgs.darwin.IOKit;
-          #   jq = pkgs.jq;
-          #   gnumake = pkgs.gnumake;
-          # };
+          chainlink = import ./pkgs/chainlink/default.nix {
+            pkgs = pkgs;
+            lib = pkgs.lib;
+            stdenv = pkgs.stdenv;
+            buildGoModule = pkgs.buildGoModule;
+            buildGoPackage = pkgs.buildGoPackage;
+            fetchFromGitHub = pkgs.fetchFromGitHub;
+            git = pkgs.git;
+            python3 = pkgs.python3;
+            coreutils = pkgs.coreutils;
+            toybox = pkgs.toybox;
+            libobjc = pkgs.darwin.libobjc;
+            IOKit = pkgs.darwin.IOKit;
+            jq = pkgs.jq;
+            gnumake = pkgs.gnumake;
+            gencodec = self.packages.${system}.gencodec;
+          };
         }
       );
 
       # Make Chainlink the default package
-      defaultPackage = forAllSystems (system: self.packages.${system}.gencodec);
+      defaultPackage = forAllSystems (system: self.packages.${system}.chainlink);
 
       # Define devShell for development
       devShell = forAllSystems (system: 
         nixpkgsFor.${system}.mkShell {
           nativeBuildInputs = [
-            # self.packages.${system}.chainlink
+            self.packages.${system}.chainlink
             self.packages.${system}.gencodec
             nixpkgsFor.${system}.go
             nixpkgsFor.${system}.git
