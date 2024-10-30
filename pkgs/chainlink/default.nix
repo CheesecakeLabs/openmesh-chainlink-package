@@ -31,7 +31,7 @@ buildGoModule rec {
     coreutils  # Coreutils for basic utilities
     toybox  # Toybox for additional tools
     jq  # jq for JSON processing
-    (buildGoModule rec {
+    (buildGoPackage rec {
       pname = "gencodec";
       version = "0.1.0";  # Example version, update if needed
       src = fetchFromGitHub {
