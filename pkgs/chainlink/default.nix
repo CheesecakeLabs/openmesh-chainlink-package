@@ -52,6 +52,7 @@ buildGoModule rec {
 
     # echo "Building Chainlink..."
     # make install
+    mkdir -p ./bin/chainlink
   '';
 
   # Installation phase
