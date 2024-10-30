@@ -41,6 +41,25 @@ buildGoModule rec {
         rev = "master";  # Use the latest commit or specific tag if needed
         sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with the correct hash
       };
+
+      buildPhase = ''
+        export GOPATH=$TMPDIR/go
+        mkdir -p $GOPATH/src/github.com/fjl
+        ln -s $src $GOPATH/src/github.com/fjl/gencodec
+
+        echo "Fetching dependencies..."
+        GO111MODULE=off go get github.com/fjl/gencodec/internal/clasherrors
+        GO111MODULE=off go get github.com/fjl/gencodec/internal/clashjson
+
+        cd $GOPATH/src/github.com/fjl/gencodec
+        echo "Building gencodec..."
+        go build -o gencodec ./cmd/gencodec
+      '';
+
+      installPhase = ''
+        mkdir -p $out/bin
+        cp gencodec $out/bin/gencodec
+      '';
       # goDeps = ./gencodec-packages.nix;
       # outputs = [ "out" ];
       # buildPhase = ''
