@@ -13,12 +13,12 @@ buildGoModule rec {
   };
 
   # Fetch gencodec from GitHub
-  # gencodec = fetchFromGitHub {
-  #   owner = "smartcontractkit";
-  #   repo = "gencodec";
-  #   rev = "master";
-  #   sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with correct hash
-  # };
+  gencodec = fetchFromGitHub {
+    owner = "smartcontractkit";
+    repo = "gencodec";
+    rev = "master";
+    sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with correct hash
+  };
 
   # Vendor dependencies to avoid network access during the build
   proxyVendor = true;
@@ -49,9 +49,6 @@ buildGoModule rec {
 
     echo "Setting NPM strict-ssl to false for this build..."
     npm config set strict-ssl false
-
-    echo "Install gencodec..."
-    go get -u github.com/smartcontractkit/gencodec
 
     echo "Building Chainlink..."
     make install
