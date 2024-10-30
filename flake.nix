@@ -51,14 +51,14 @@
       );
 
       # Make Chainlink the default package
-      defaultPackage = forAllSystems (system: self.packages.${system}.chainlink);
+      defaultPackage = forAllSystems (system: self.packages.${system}.gencodec);
 
       # Define devShell for development
       devShell = forAllSystems (system: 
         nixpkgsFor.${system}.mkShell {
           nativeBuildInputs = [
-            self.packages.${system}.chainlink
-            # self.packages.${system}.gencodec
+            # self.packages.${system}.chainlink
+            self.packages.${system}.gencodec
             nixpkgsFor.${system}.go
             nixpkgsFor.${system}.git
             nixpkgsFor.${system}.python3
