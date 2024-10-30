@@ -12,6 +12,14 @@ buildGoModule rec {
     sha256 = "0dyhs7g95abbn3r43camlwwwxnnm9xd3k8v13hkrr25cqw9ggfsi";  # Replace with correct hash using nix-prefetch-url
   };
 
+  # Fetch gencodec from GitHub
+  # gencodec = fetchFromGitHub {
+  #   owner = "smartcontractkit";
+  #   repo = "gencodec";
+  #   rev = "master";
+  #   sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with correct hash
+  # };
+
   # Vendor dependencies to avoid network access during the build
   proxyVendor = true;
   vendorHash = "sha256-fb3DlXdrQw0NBKiOkblcModtLg4zDkBx+AKz/4vcFEY=";  # Replace with correct hash
@@ -32,36 +40,6 @@ buildGoModule rec {
     toybox  # Toybox for additional tools
     jq  # jq for JSON processing
     gnumake  # GNU Make for building
-    # (buildGoPackage rec {
-    #   pname = "gencodec";
-    #   version = "0.1.0";  # Example version, update if needed
-    #   goPackagePath = "github.com/smartcontractkit/gencodec";
-    #   src = fetchFromGitHub {
-    #     owner = "smartcontractkit";
-    #     repo = "gencodec";
-    #     rev = "master";  # Use the latest commit or specific tag if needed
-    #     sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with the correct hash
-    #   };
-
-    #   buildPhase = ''
-    #     export GOPATH=$TMPDIR/go
-    #     mkdir -p $GOPATH/src/github.com/fjl
-    #     ln -s $src $GOPATH/src/github.com/fjl/gencodec
-
-    #     echo "Fetching dependencies..."
-    #     go get github.com/fjl/gencodec/internal/clasherrors
-    #     go get github.com/fjl/gencodec/internal/clashjson
-
-    #     cd $GOPATH/src/github.com/fjl/gencodec
-    #     echo "Building gencodec..."
-    #     go build -o gencodec ./cmd/gencodec
-    #   '';
-
-    #   installPhase = ''
-    #     mkdir -p $out/bin
-    #     cp gencodec $out/bin/gencodec
-    #   '';
-    # })
   ];
 
   # Build phase following the provided guide
@@ -72,11 +50,8 @@ buildGoModule rec {
     echo "Setting NPM strict-ssl to false for this build..."
     npm config set strict-ssl false
 
-    # clone gencodec repo, cd into it, and install it
-    git clone https://github.com/smartcontractkit/gencodec.git
-    cd gencodec
-    go install
-
+    echo "Install gencodec..."
+    go get -u github.com/smartcontractkit/gencodec
 
     echo "Building Chainlink..."
     make install
