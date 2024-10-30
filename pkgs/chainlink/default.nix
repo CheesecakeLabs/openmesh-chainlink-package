@@ -48,8 +48,8 @@ buildGoModule rec {
         ln -s $src $GOPATH/src/github.com/fjl/gencodec
 
         echo "Fetching dependencies..."
-        GO111MODULE=off go get github.com/fjl/gencodec/internal/clasherrors
-        GO111MODULE=off go get github.com/fjl/gencodec/internal/clashjson
+        go get github.com/fjl/gencodec/internal/clasherrors
+        go get github.com/fjl/gencodec/internal/clashjson
 
         cd $GOPATH/src/github.com/fjl/gencodec
         echo "Building gencodec..."
