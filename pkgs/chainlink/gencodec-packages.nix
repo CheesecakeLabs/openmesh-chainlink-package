@@ -5,7 +5,7 @@
       type = "git";
       url = "https://github.com/fjl/gogen";
       rev = "1d203ffc1f61870f13a589286cd21b9fdcaf7755";
-      sha256 = "sha256-0q254dmx38yi4r41dlq4gkam1k13wcwvbf4cb44h24qd20ib2hyn";
+      sha256 = "sha256-1kOxIhANEwEJWYy4tTnjI8xQ1XwE0xZIJtGj0WsjRWA=";
     };
   }
   {
@@ -14,7 +14,7 @@
       type = "git";
       url = "https://github.com/kylelemons/godebug";
       rev = "a616ab194758ae0a11290d87ca46ee8c440117b0";
-      sha256 = "sha256-1710y6qqbf5ir4ikcym4la7g1j2nzlib4zfvpr2jjrgq8n1n8kzj=";
+      sha256 = "sha256-8k9kg0X4ZSlFvtt9siL9VsjwjqKkejYjybG4hbHxIJw=";
     };
   }
   {
@@ -23,7 +23,7 @@
       type = "git";
       url = "https://go.googlesource.com/tools";
       rev = "6e7ee5a9ec598d425ca86d6aab6e76e21baf328c";
-      sha256 = "sha256-0lcvflb6gjv6rirdmh1h43hjs50wvf30m4cqlaaafjs43x9z0xqj";
+      sha256 = "sha256-EnfwUx9ES6eUopiRCobbHBQt4SAwwNpyzGbLZxZ1m1E=";
     };
   }
   {
@@ -32,7 +32,7 @@
       type = "git";
       url = "https://go.googlesource.com/tools";
       rev = "6e7ee5a9ec598d425ca86d6aab6e76e21baf328c";
-      sha256 = "sha256-0lcvflb6gjv6rirdmh1h43hjs50wvf30m4cqlaaafjs43x9z0xqj";
+      sha256 = "sha256-EnfwUx9ES6eUopiRCobbHBQt4SAwwNpyzGbLZxZ1m1E=";
     };
   }
   {
@@ -41,7 +41,7 @@
       type = "git";
       url = "https://go.googlesource.com/tools";
       rev = "6e7ee5a9ec598d425ca86d6aab6e76e21baf328c";
-      sha256 = "sha256-0lcvflb6gjv6rirdmh1h43hjs50wvf30m4cqlaaafjs43x9z0xqj";
+      sha256 = "sha256-EnfwUx9ES6eUopiRCobbHBQt4SAwwNpyzGbLZxZ1m1E=";
     };
   }
   {
@@ -50,7 +50,7 @@
       type = "git";
       url = "https://go.googlesource.com/tools";
       rev = "6e7ee5a9ec598d425ca86d6aab6e76e21baf328c";
-      sha256 = "sha256-0lcvflb6gjv6rirdmh1h43hjs50wvf30m4cqlaaafjs43x9z0xqj";
+      sha256 = "sha256-EnfwUx9ES6eUopiRCobbHBQt4SAwwNpyzGbLZxZ1m1E=";
     };
   }
 ]
