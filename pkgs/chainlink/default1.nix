@@ -18,9 +18,7 @@ pkgs.mkShell {
     }))
     
     # Node.js v20 with pnpm v9
-    (pkgs.nodejs.overrideAttrs (oldAttrs: rec {
-      version = nodeVersion;
-    }))
+    nodejs
     pnpm
 
     # PostgreSQL 16.x
