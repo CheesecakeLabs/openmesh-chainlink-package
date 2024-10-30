@@ -71,7 +71,7 @@ buildGoModule rec {
     export PATH=$GOPATH/bin:$PATH
 
     # Install gencodec using Go
-    go install github.com/smartcontractkit/gencodec@latest
+    GO111MODULE=off go install github.com/smartcontractkit/gencodec@latest
 
     echo "Building Chainlink..."
     make install
