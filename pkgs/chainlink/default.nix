@@ -55,6 +55,8 @@ buildGoModule rec {
 
     echo "Setting NPM strict-ssl to false for this build..."
     npm config set strict-ssl false
+    npm config rm proxy 
+    npm config rm https-proxy
   '';
 
   # Installation phase
