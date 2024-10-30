@@ -39,6 +39,7 @@ pkgs.mkShell {
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
       [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
     fi
+    source ./nix-darwin-shell-hook.sh
     nvm install $NODE_VERSION
     nvm use $NODE_VERSION
     # Install pnpm
