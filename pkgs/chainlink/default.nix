@@ -43,6 +43,7 @@ buildGoModule rec {
       };
       vendorHash = null;
       doCheck = false;
+      goDeps = ./gencodec-packages.nix;
       # outputs = [ "out" ];
       # buildPhase = ''
       #   go build -o gencodec ./cmd/gencodec
