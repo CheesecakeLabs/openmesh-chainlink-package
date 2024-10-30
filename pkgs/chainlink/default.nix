@@ -60,18 +60,6 @@ buildGoModule rec {
         mkdir -p $out/bin
         cp gencodec $out/bin/gencodec
       '';
-      # goDeps = ./gencodec-packages.nix;
-      # outputs = [ "out" ];
-      # buildPhase = ''
-      #   go build -o gencodec ./cmd/gencodec
-      # '';
-      # installPhase = ''
-      #   mkdir -p $out/bin
-      #   cp gencodec $out/bin/gencodec
-
-      #   export PATH=$PATH:$out/bin  # Add gencodec to PATH
-      #   echo "Added gencodec to PATH"
-      # '';
     })
   ];
 
