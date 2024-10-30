@@ -21,7 +21,7 @@
         let
           pkgs = nixpkgsFor.${system};
         in {
-          chainlink = import ./pkgs/chainlink/default.nix {
+          chainlink = import ./pkgs/chainlink/default1.nix {
             lib = pkgs.lib;
             stdenv = pkgs.stdenv;
             buildGoModule = pkgs.buildGoModule;
