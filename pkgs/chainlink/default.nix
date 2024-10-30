@@ -49,9 +49,12 @@ buildGoModule rec {
 
     echo "Setting NPM strict-ssl to false for this build..."
     npm config set strict-ssl false
+    
+    # list directory contents
+    ls -la
 
-    echo "Building Chainlink..."
-    make install
+    # echo "Building Chainlink..."
+    # make install
   '';
 
   # Installation phase
