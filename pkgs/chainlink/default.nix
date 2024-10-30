@@ -1,4 +1,4 @@
-{ lib, stdenv, buildGoModule, buildGoPackage, fetchFromGitHub, git, python3, postgresql_16, nodejs, pnpm, libobjc, IOKit, toybox, coreutils, jq }:
+{ lib, stdenv, buildGoModule, buildGoPackage, fetchFromGitHub, git, python3, postgresql_16, nodejs, pnpm, libobjc, IOKit, toybox, coreutils, jq, gnumake }:
 
 buildGoModule rec {
   pname = "chainlink";
@@ -31,36 +31,37 @@ buildGoModule rec {
     coreutils  # Coreutils for basic utilities
     toybox  # Toybox for additional tools
     jq  # jq for JSON processing
-    (buildGoPackage rec {
-      pname = "gencodec";
-      version = "0.1.0";  # Example version, update if needed
-      goPackagePath = "github.com/smartcontractkit/gencodec";
-      src = fetchFromGitHub {
-        owner = "smartcontractkit";
-        repo = "gencodec";
-        rev = "master";  # Use the latest commit or specific tag if needed
-        sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with the correct hash
-      };
+    gnumake  # GNU Make for building
+    # (buildGoPackage rec {
+    #   pname = "gencodec";
+    #   version = "0.1.0";  # Example version, update if needed
+    #   goPackagePath = "github.com/smartcontractkit/gencodec";
+    #   src = fetchFromGitHub {
+    #     owner = "smartcontractkit";
+    #     repo = "gencodec";
+    #     rev = "master";  # Use the latest commit or specific tag if needed
+    #     sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with the correct hash
+    #   };
 
-      buildPhase = ''
-        export GOPATH=$TMPDIR/go
-        mkdir -p $GOPATH/src/github.com/fjl
-        ln -s $src $GOPATH/src/github.com/fjl/gencodec
+    #   buildPhase = ''
+    #     export GOPATH=$TMPDIR/go
+    #     mkdir -p $GOPATH/src/github.com/fjl
+    #     ln -s $src $GOPATH/src/github.com/fjl/gencodec
 
-        echo "Fetching dependencies..."
-        go get github.com/fjl/gencodec/internal/clasherrors
-        go get github.com/fjl/gencodec/internal/clashjson
+    #     echo "Fetching dependencies..."
+    #     go get github.com/fjl/gencodec/internal/clasherrors
+    #     go get github.com/fjl/gencodec/internal/clashjson
 
-        cd $GOPATH/src/github.com/fjl/gencodec
-        echo "Building gencodec..."
-        go build -o gencodec ./cmd/gencodec
-      '';
+    #     cd $GOPATH/src/github.com/fjl/gencodec
+    #     echo "Building gencodec..."
+    #     go build -o gencodec ./cmd/gencodec
+    #   '';
 
-      installPhase = ''
-        mkdir -p $out/bin
-        cp gencodec $out/bin/gencodec
-      '';
-    })
+    #   installPhase = ''
+    #     mkdir -p $out/bin
+    #     cp gencodec $out/bin/gencodec
+    #   '';
+    # })
   ];
 
   # Build phase following the provided guide

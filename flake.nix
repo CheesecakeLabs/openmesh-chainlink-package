@@ -37,6 +37,7 @@
             libobjc = pkgs.darwin.libobjc;
             IOKit = pkgs.darwin.IOKit;
             jq = pkgs.jq;
+            gnumake = pkgs.gnumake;
           };
         }
       );
