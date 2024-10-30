@@ -41,8 +41,6 @@ pkgs.mkShell {
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$PATH
 
-    source ./nix-darwin-shell-hook.sh
-
     # Verify Node.js and pnpm installation
     echo "Using Node.js version: $(node -v)"
     echo "Using pnpm version: $(pnpm -v)"
