@@ -65,7 +65,6 @@ buildGoModule rec {
     npm config set strict-ssl false
 
     echo "Installing gencodec..."
-    go install github.com/smartcontractkit/gencodec@latest
     go mod download
 
     echo "Building Chainlink..."
