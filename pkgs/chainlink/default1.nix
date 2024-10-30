@@ -1,57 +1,65 @@
 { pkgs, lib, stdenv, buildGoModule, buildGoPackage, fetchFromGitHub, git, python3, postgresql_16, nodejs, pnpm, libobjc, IOKit, toybox, coreutils, jq, gnumake }:
+
 let
   goVersion = "1.22";
-  nodeVersion = "20.0.0";
+  nodeVersion = "20.0.0";  # Version constraint for Node.js
 in
+
 pkgs.mkShell {
-  name = "chainlink-node-env";
+  name = "chainlink";
+
   buildInputs = with pkgs; [
-    # Go programming language
+    # Go programming language (version 1.22)
     (pkgs.go_1_22.overrideAttrs (old: {
       postInstall = ''
         export GOPATH=$HOME/go
         export PATH=$GOPATH/bin:$PATH
       '';
     }))
-    # Node.js v20 and pnpm v9
+    
+    # Node.js v20 with pnpm v9
     (pkgs.nodejs.overrideAttrs (oldAttrs: rec {
       version = nodeVersion;
     }))
     pnpm
-    # PostgreSQL (12.x or later, selecting 16.x)
+
+    # PostgreSQL 16.x
     postgresql_16
-    # Python 3 for solc-select
+
+    # Python 3 (required by solc-select)
     python3
-    # Git to clone Chainlink
+
+    # Git for cloning Chainlink
     git
+
+    # Additional tools
+    toybox coreutils jq gnumake
   ];
+
   shellHook = ''
     echo "Starting Chainlink Node Setup..."
+
     # Set GOPATH and add Go binaries to PATH
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$PATH
-    # Set up Node.js via nvm
-    export NODE_VERSION=${nodeVersion}
-    if ! command -v nvm &> /dev/null; then
-      echo "Installing nvm..."
-      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-      export NVM_DIR="$HOME/.nvm"
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-    fi
+
     source ./nix-darwin-shell-hook.sh
-    nvm install $NODE_VERSION
-    nvm use $NODE_VERSION
-    # Install pnpm
-    npm install -g pnpm@9
-    # Clone Chainlink repository
+
+    # Verify Node.js and pnpm installation
+    echo "Using Node.js version: $(node -v)"
+    echo "Using pnpm version: $(pnpm -v)"
+
+    # Clone the Chainlink repository if it doesn't exist
     if [ ! -d "chainlink" ]; then
+      echo "Cloning Chainlink repository..."
       git clone https://github.com/smartcontractkit/chainlink.git
     fi
     cd chainlink
-    # Build Chainlink node
+
+    # Build the Chainlink node
     echo "Building Chainlink..."
     make install
+
     echo "Chainlink built successfully. Run the node with: chainlink help"
   '';
 }
