@@ -33,6 +33,7 @@ buildGoModule rec {
     jq  # jq for JSON processing
     (buildGoModule rec {
       pname = "gencodec";
+      version = "0.1.0";  # Example version, update if needed
       src = fetchFromGitHub {
         owner = "smartcontractkit";
         repo = "gencodec";
@@ -41,6 +42,17 @@ buildGoModule rec {
       };
       vendorHash = null;
       doCheck = false;
+      # outputs = [ "out" ];
+      # buildPhase = ''
+      #   go build -o gencodec ./cmd/gencodec
+      # '';
+      # installPhase = ''
+      #   mkdir -p $out/bin
+      #   cp gencodec $out/bin/gencodec
+
+      #   export PATH=$PATH:$out/bin  # Add gencodec to PATH
+      #   echo "Added gencodec to PATH"
+      # '';
     })
   ];
 
