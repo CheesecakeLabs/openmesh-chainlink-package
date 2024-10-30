@@ -35,7 +35,7 @@ buildGoModule rec {
       pname = "gencodec";
       version = "0.1.0";  # Example version, update if needed
       src = fetchFromGitHub {
-        owner = "fjl";
+        owner = "smartcontractkit";
         repo = "gencodec";
         rev = "master";  # Use the latest commit or specific tag if needed
         sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with the correct hash
