@@ -31,31 +31,29 @@ buildGoModule rec {
     coreutils  # Coreutils for basic utilities
     toybox  # Toybox for additional tools
     jq  # jq for JSON processing
-    # (buildGoPackage rec {
-    #   pname = "gencodec";
-    #   version = "0.1.0";  # Example version, update if needed
-    #   goPackagePath = "github.com/smartcontractkit/gencodec";
-    #   src = fetchFromGitHub {
-    #     owner = "smartcontractkit";
-    #     repo = "gencodec";
-    #     rev = "master";  # Use the latest commit or specific tag if needed
-    #     sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with the correct hash
-    #   };
-    #   vendorHash = null;
-    #   doCheck = false;
-    #   # goDeps = ./gencodec-packages.nix;
-    #   # outputs = [ "out" ];
-    #   # buildPhase = ''
-    #   #   go build -o gencodec ./cmd/gencodec
-    #   # '';
-    #   # installPhase = ''
-    #   #   mkdir -p $out/bin
-    #   #   cp gencodec $out/bin/gencodec
+    (buildGoPackage rec {
+      pname = "gencodec";
+      version = "0.1.0";  # Example version, update if needed
+      goPackagePath = "github.com/smartcontractkit/gencodec";
+      src = fetchFromGitHub {
+        owner = "smartcontractkit";
+        repo = "gencodec";
+        rev = "master";  # Use the latest commit or specific tag if needed
+        sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with the correct hash
+      };
+      # goDeps = ./gencodec-packages.nix;
+      # outputs = [ "out" ];
+      # buildPhase = ''
+      #   go build -o gencodec ./cmd/gencodec
+      # '';
+      # installPhase = ''
+      #   mkdir -p $out/bin
+      #   cp gencodec $out/bin/gencodec
 
-    #   #   export PATH=$PATH:$out/bin  # Add gencodec to PATH
-    #   #   echo "Added gencodec to PATH"
-    #   # '';
-    # })
+      #   export PATH=$PATH:$out/bin  # Add gencodec to PATH
+      #   echo "Added gencodec to PATH"
+      # '';
+    })
   ];
 
   # Build phase following the provided guide
@@ -65,14 +63,6 @@ buildGoModule rec {
 
     echo "Setting NPM strict-ssl to false for this build..."
     npm config set strict-ssl false
-
-    echo "Installing gencodec..."
-    export GOPATH=$TMPDIR/go  # Temporary GOPATH
-    export PATH=$GOPATH/bin:$PATH
-
-    # Install gencodec using Go
-    go env -w GO111MODULE=off
-    go install github.com/smartcontractkit/gencodec@latest
 
     echo "Building Chainlink..."
     make install
