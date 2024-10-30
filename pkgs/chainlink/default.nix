@@ -40,6 +40,9 @@ buildGoModule rec {
         rev = "master";  # Use the latest commit or specific tag if needed
         sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with the correct hash
       };
+      vendorHash = "";
+      doCheck = false;
+      outputs = [ "out" ];
       buildPhase = ''
         go build -o gencodec ./cmd/gencodec
       '';
