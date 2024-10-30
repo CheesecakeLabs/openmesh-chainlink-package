@@ -1,4 +1,4 @@
-{ lib, stdenv, buildGoModule, buildGoPackage, fetchFromGitHub, git, python3, postgresql_16, nodejs, pnpm, libobjc, IOKit, toybox, coreutils, jq, gnumake }:
+{ pkgs, lib, stdenv, buildGoModule, buildGoPackage, fetchFromGitHub, git, python3, postgresql_16, nodejs, pnpm, libobjc, IOKit, toybox, coreutils, jq, gnumake }:
 let
   goVersion = "1.22";
   nodeVersion = "20.0.0";
