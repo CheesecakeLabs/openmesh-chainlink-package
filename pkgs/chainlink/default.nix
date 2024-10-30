@@ -56,10 +56,9 @@ buildGoModule rec {
 
   # Installation phase
   installPhase = ''
-    mkdir $out/bin/chainlink
-    echo "Installing Chainlink binaries..."
-    mkdir -p $out/bin
-    cp ./bin/chainlink $out/bin/chainlink
+    # echo "Installing Chainlink binaries..."
+    # mkdir -p $out/bin
+    # cp ./bin/chainlink $out/bin/chainlink
   '';
 
   # Platform-specific fixes for macOS
