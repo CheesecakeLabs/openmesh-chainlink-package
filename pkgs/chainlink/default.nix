@@ -31,29 +31,29 @@ buildGoModule rec {
     coreutils  # Coreutils for basic utilities
     toybox  # Toybox for additional tools
     jq  # jq for JSON processing
-    (buildGoModule rec {
-      pname = "gencodec";
-      version = "0.1.0";  # Example version, update if needed
-      src = fetchFromGitHub {
-        owner = "smartcontractkit";
-        repo = "gencodec";
-        rev = "master";  # Use the latest commit or specific tag if needed
-        sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with the correct hash
-      };
-      vendorHash = null;
-      doCheck = false;
-      outputs = [ "out" ];
-      buildPhase = ''
-        go build -o gencodec ./cmd/gencodec
-      '';
-      installPhase = ''
-        mkdir -p $out/bin
-        cp gencodec $out/bin/gencodec
+    # (buildGoModule rec {
+    #   pname = "gencodec";
+    #   version = "0.1.0";  # Example version, update if needed
+    #   src = fetchFromGitHub {
+    #     owner = "smartcontractkit";
+    #     repo = "gencodec";
+    #     rev = "master";  # Use the latest commit or specific tag if needed
+    #     sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with the correct hash
+    #   };
+    #   vendorHash = null;
+    #   doCheck = false;
+    #   outputs = [ "out" ];
+    #   buildPhase = ''
+    #     go build -o gencodec ./cmd/gencodec
+    #   '';
+    #   installPhase = ''
+    #     mkdir -p $out/bin
+    #     cp gencodec $out/bin/gencodec
 
-        export PATH=$PATH:$out/bin  # Add gencodec to PATH
-        echo "Added gencodec to PATH"
-      '';
-    })
+    #     export PATH=$PATH:$out/bin  # Add gencodec to PATH
+    #     echo "Added gencodec to PATH"
+    #   '';
+    # })
   ];
 
   # Build phase following the provided guide
@@ -83,6 +83,9 @@ buildGoModule rec {
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$PATH
     echo "GOPATH set to $GOPATH"
+
+    echo "Installing gencodec..."
+    go install github.com/smartcontractkit/gencodec@latest
   '';
 
   # Package metadata
