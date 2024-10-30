@@ -24,7 +24,7 @@
           gencodec = import ./pkgs/gencodec/default.nix {
             lib = pkgs.lib;
             stdenv = pkgs.stdenv;
-            buildGoModule = pkgs.buildGoModule;
+            buildGoPackage = pkgs.buildGoPackage;
             fetchFromGitHub = pkgs.fetchFromGitHub;
             git = pkgs.git;
             jq = pkgs.jq;
