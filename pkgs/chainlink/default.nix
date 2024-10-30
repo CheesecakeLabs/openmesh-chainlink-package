@@ -34,6 +34,7 @@ buildGoModule rec {
     (buildGoPackage rec {
       pname = "gencodec";
       version = "0.1.0";  # Example version, update if needed
+      goPackagePath = "github.com/smartcontractkit/gencodec";
       src = fetchFromGitHub {
         owner = "smartcontractkit";
         repo = "gencodec";
