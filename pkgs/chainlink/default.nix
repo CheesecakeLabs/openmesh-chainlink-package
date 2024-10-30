@@ -54,7 +54,7 @@ buildGoModule rec {
     ls -la
 
     # echo "Building Chainlink..."
-    # make install
+    make install
   '';
 
   # Installation phase
@@ -72,6 +72,7 @@ buildGoModule rec {
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$PATH
     echo "GOPATH set to $GOPATH"
+    source ./nix-darwin-shell-hook.sh
   '';
 
   # Package metadata
