@@ -51,7 +51,10 @@ buildGoModule rec {
     npm config set strict-ssl false
     
     # list directory contents
+    cd gencodec
     ls -la
+
+    cd ..
 
     # echo "Building Chainlink..."
     make install
