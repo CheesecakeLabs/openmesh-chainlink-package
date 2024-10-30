@@ -1,4 +1,4 @@
-{ pkgs, lib, stdenv, buildGoModule, buildGoPackage, fetchFromGitHub, git, python3, postgresql_16, nodejs, pnpm, libobjc, IOKit, toybox, coreutils, jq, gnumake }:
+{ pkgs, lib, stdenv, go, buildGoModule, buildGoPackage, fetchFromGitHub, git, python3, postgresql_16, nodejs, pnpm, libobjc, IOKit, toybox, coreutils, jq, gnumake }:
 
 let
   goVersion = "1.22";
@@ -10,12 +10,7 @@ pkgs.mkShell {
 
   buildInputs = with pkgs; [
     # Go programming language (version 1.22)
-    (pkgs.go_1_22.overrideAttrs (old: {
-      postInstall = ''
-        export GOPATH=$HOME/go
-        export PATH=$GOPATH/bin:$PATH
-      '';
-    }))
+    go
     
     # Node.js v20 with pnpm v9
     nodejs

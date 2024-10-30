@@ -29,6 +29,7 @@
             buildGoPackage = pkgs.buildGoPackage;
             fetchFromGitHub = pkgs.fetchFromGitHub;
             git = pkgs.git;
+            go = pkgs.go;
             python3 = pkgs.python3;
             postgresql_16 = pkgs.postgresql_16;
             nodejs = pkgs.nodejs;
