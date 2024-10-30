@@ -4,16 +4,22 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs";
     flake-compat.url = "github:nix-community/flake-compat";
+    flake-utils.url = "github:numtide/flake-utils";
+    foundry.url = "github:shazow/foundry.nix/monthly";
+    foundry.inputs.flake-utils.follows = "flake-utils";
   };
 
-  outputs = { self, nixpkgs, ... }:
+  outputs = { self, nixpkgs, foundry, ... }:
     let
       # Supported architectures: x86_64 and aarch64
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
 
       # Import Nixpkgs for all systems
-      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
+      nixpkgsFor = forAllSystems (system: import nixpkgs {
+        inherit system;
+        overlays = [ foundry.overlay ];
+      });
     in
     {
       # Define the Chainlink package for all systems
@@ -43,6 +49,20 @@
             jq = pkgs.jq;
             gnumake = pkgs.gnumake;
             gencodec = self.packages.${system}.gencodec;
+            python3Packages = pkgs.python3Packages;
+            protobuf = pkgs.protobuf;
+            protoc-gen-go = pkgs.protoc-gen-go;
+            protoc-gen-go-grpc = pkgs.protoc-gen-go-grpc;
+            foundry-bin = pkgs.foundry-bin;
+            curl = pkgs.curl;
+            go-ethereum = pkgs.go-ethereum;
+            gotools = pkgs.gotools;
+            gopls = pkgs.gopls;
+            delve = pkgs.delve;
+            github-cli = pkgs.github-cli;
+            pkg-config = pkgs.pkg-config;
+            libudev-zero = pkgs.libudev-zero;
+            libusb1 = pkgs.libusb1;
           };
         }
       );
