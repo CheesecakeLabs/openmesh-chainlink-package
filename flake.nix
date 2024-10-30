@@ -23,11 +23,9 @@
         in {
           gencodec = import ./pkgs/gencodec/default.nix {
             lib = pkgs.lib;
-            stdenv = pkgs.stdenv;
             buildGoPackage = pkgs.buildGoPackage;
             fetchFromGitHub = pkgs.fetchFromGitHub;
             git = pkgs.git;
-            jq = pkgs.jq;
           };
           # chainlink = import ./pkgs/chainlink/default.nix {
           #   lib = pkgs.lib;
