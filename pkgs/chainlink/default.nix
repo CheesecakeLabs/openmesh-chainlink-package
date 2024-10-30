@@ -31,6 +31,23 @@ buildGoModule rec {
     coreutils  # Coreutils for basic utilities
     toybox  # Toybox for additional tools
     jq  # jq for JSON processing
+    (buildGoModule rec {
+      pname = "gencodec";
+      version = "0.1.0";  # Example version, update if needed
+      src = fetchFromGitHub {
+        owner = "fjl";
+        repo = "gencodec";
+        rev = "master";  # Use the latest commit or specific tag if needed
+        sha256 = "sha256-YYYYYYYYYYYYYYYY";  # Replace with the correct hash
+      };
+      buildPhase = ''
+        go build -o gencodec ./cmd/gencodec
+      '';
+      installPhase = ''
+        mkdir -p $out/bin
+        cp gencodec $out/bin/gencodec
+      '';
+    })
   ];
 
   # Build phase following the provided guide
@@ -57,6 +74,8 @@ buildGoModule rec {
 
   # Environment setup to ensure Go paths are correctly set
   shellHook = ''
+    export PATH=$PATH:${pkgs.gencodec}/bin
+    echo "Added gencodec to PATH"
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$PATH
     echo "GOPATH set to $GOPATH"
