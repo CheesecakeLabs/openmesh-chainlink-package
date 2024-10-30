@@ -21,24 +21,32 @@
         let
           pkgs = nixpkgsFor.${system};
         in {
-          chainlink = import ./pkgs/chainlink/default.nix {
+          gencodec = import ./pkgs/gencodec/default.nix {
             lib = pkgs.lib;
             stdenv = pkgs.stdenv;
             buildGoModule = pkgs.buildGoModule;
-            buildGoPackage = pkgs.buildGoPackage;
             fetchFromGitHub = pkgs.fetchFromGitHub;
             git = pkgs.git;
-            python3 = pkgs.python3;
-            postgresql_16 = pkgs.postgresql_16;
-            nodejs = pkgs.nodejs;
-            pnpm = pkgs.pnpm;
-            coreutils = pkgs.coreutils;
-            toybox = pkgs.toybox;
-            libobjc = pkgs.darwin.libobjc;
-            IOKit = pkgs.darwin.IOKit;
             jq = pkgs.jq;
-            gnumake = pkgs.gnumake;
           };
+          # chainlink = import ./pkgs/chainlink/default.nix {
+          #   lib = pkgs.lib;
+          #   stdenv = pkgs.stdenv;
+          #   buildGoModule = pkgs.buildGoModule;
+          #   buildGoPackage = pkgs.buildGoPackage;
+          #   fetchFromGitHub = pkgs.fetchFromGitHub;
+          #   git = pkgs.git;
+          #   python3 = pkgs.python3;
+          #   postgresql_16 = pkgs.postgresql_16;
+          #   nodejs = pkgs.nodejs;
+          #   pnpm = pkgs.pnpm;
+          #   coreutils = pkgs.coreutils;
+          #   toybox = pkgs.toybox;
+          #   libobjc = pkgs.darwin.libobjc;
+          #   IOKit = pkgs.darwin.IOKit;
+          #   jq = pkgs.jq;
+          #   gnumake = pkgs.gnumake;
+          # };
         }
       );
 
@@ -50,6 +58,7 @@
         nixpkgsFor.${system}.mkShell {
           nativeBuildInputs = [
             self.packages.${system}.chainlink
+            # self.packages.${system}.gencodec
             nixpkgsFor.${system}.go
             nixpkgsFor.${system}.git
             nixpkgsFor.${system}.python3
