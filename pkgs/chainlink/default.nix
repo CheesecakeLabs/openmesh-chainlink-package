@@ -9,22 +9,13 @@ buildGoModule rec {
     owner = "smartcontractkit";
     repo = "chainlink";
     rev = "v${version}";
-    sha256 = "0dyhs7g95abbn3r43camlwwwxnnm9xd3k8v13hkrr25cqw9ggfsi";  # Replace with correct hash using nix-prefetch-url
+    sha256 = "0dyhs7g95abbn3r43camlwwwxnnm9xd3k8v13hkrr25cqw9ggfsi";
   };
-
-  # # Fetch gencodec from GitHub
-  # gencodec = fetchFromGitHub {
-  #   owner = "smartcontractkit";
-  #   repo = "gencodec";
-  #   rev = "master";
-  #   sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with correct hash
-  # };
 
   # Vendor dependencies to avoid network access during the build
   proxyVendor = true;
-  vendorHash = "sha256-fb3DlXdrQw0NBKiOkblcModtLg4zDkBx+AKz/4vcFEY=";  # Replace with correct hash
+  vendorHash = "sha256-fb3DlXdrQw0NBKiOkblcModtLg4zDkBx+AKz/4vcFEY=";
 
-  # Disable tests for now; can be enabled if needed
   doCheck = false;
 
   outputs = [ "out" ];
@@ -49,13 +40,11 @@ buildGoModule rec {
 
     echo "Setting NPM strict-ssl to false for this build..."
     npm config set strict-ssl false
-
-    # echo "Building Chainlink..."
-    make install
   '';
 
   # Installation phase
   installPhase = ''
+    make install
     echo "Installing Chainlink binaries..."
     mkdir -p $out/bin
     cp ./bin/chainlink $out/bin/chainlink
