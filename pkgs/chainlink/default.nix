@@ -51,14 +51,14 @@ buildGoModule rec {
     npm config set strict-ssl false
 
     # echo "Building Chainlink..."
-    # make install
+    make install
   '';
 
   # Installation phase
   installPhase = ''
-    # echo "Installing Chainlink binaries..."
-    # mkdir -p $out/bin
-    # cp ./bin/chainlink $out/bin/chainlink
+    echo "Installing Chainlink binaries..."
+    mkdir -p $out/bin
+    cp ./bin/chainlink $out/bin/chainlink
   '';
 
   # Platform-specific fixes for macOS
