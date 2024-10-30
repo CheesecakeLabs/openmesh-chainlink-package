@@ -38,7 +38,7 @@ buildGoModule rec {
         owner = "fjl";
         repo = "gencodec";
         rev = "master";  # Use the latest commit or specific tag if needed
-        sha256 = "sha256-YYYYYYYYYYYYYYYY";  # Replace with the correct hash
+        sha256 = "0sj7kc0hx08bzccm1hzqz9iks755h6vfm9bwzr448x1jpvd8ad2r";  # Replace with the correct hash
       };
       buildPhase = ''
         go build -o gencodec ./cmd/gencodec
@@ -46,6 +46,9 @@ buildGoModule rec {
       installPhase = ''
         mkdir -p $out/bin
         cp gencodec $out/bin/gencodec
+
+        export PATH=$PATH:$out/bin  # Add gencodec to PATH
+        echo "Added gencodec to PATH"
       '';
     })
   ];
@@ -74,8 +77,6 @@ buildGoModule rec {
 
   # Environment setup to ensure Go paths are correctly set
   shellHook = ''
-    export PATH=$PATH:${pkgs.gencodec}/bin
-    echo "Added gencodec to PATH"
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$PATH
     echo "GOPATH set to $GOPATH"
