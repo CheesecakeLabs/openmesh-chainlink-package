@@ -29,7 +29,8 @@
   libusb1,
   postgresql_16,
   nodejs_20,
-  pnpm
+  pnpm,
+  macdylibbundler
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -40,7 +41,7 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "smartcontractkit";
     repo = "chainlink";
     rev = "v2.18.0-rc2";
-    sha256 = "sha256-av5SjX7tVGOoioxrxrwBD+zyyggWQSiYBXD7IvhjYOc=";
+    sha256 = "sha256-juyRD6CJ54pbKkyBt7odYkwGx2kmUl5yT3PT7Q6DDBM=";
     leaveDotGit = true;
   };
 
@@ -81,6 +82,7 @@ stdenv.mkDerivation (finalAttrs: {
   propagatedBuildInputs = lib.optionals stdenv.isDarwin [
     libobjc
     IOKit
+    macdylibbundler
   ];
 
   # Set up environment and build flags
@@ -96,17 +98,22 @@ stdenv.mkDerivation (finalAttrs: {
 
   # Installation phase to install the Chainlink binary
   installPhase = ''
-    GOFLAGS="-ldflags '-X github.com/smartcontractkit/chainlink/v2/core/static.Version=2.17.0 -X github.com/smartcontractkit/chainlink/v2/core/static.Sha=5ebb63266ca697f0649633641bbccb436c2c18bb'" make install
-    
-    mkdir -p "$out"
-    cp -r build/bin "$out/bin"
+    # run sed to replace GOFLAG lines
+    sed -i "" 's/GO_LDFLAGS := $(shell tools\/bin\/ldflags)//g' GNUmakefile && sed -i "" 's/\$(GO_LDFLAGS)/-X github.com\/smartcontractkit\/chainlink\/v2\/core\/static.Version=2.18.0 -X github.com\/smartcontractkit\/chainlink\/v2\/core\/static.Sha=0e855379b9f4ff54944f8ee9918b7bbfc0a67469/g' GNUmakefile
+
+    make install
+
+    make chainlink
+
+    # Copy the binary to the output directory
+    mkdir -p "$out/bin"
+    cp chainlink "$out/bin/chainlink"
   '';
+
+  dontFixup = true;
 
   # Environment setup for development shells
   shellHook = ''
-    # Add fix for macOS
-    ${if stdenv.isDarwin then "source ./nix-darwin-shell-hook.sh" else ""}
-
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$PATH
     echo "GOPATH set to $GOPATH"
