@@ -66,7 +66,6 @@
             pkg-config = pkgs.pkg-config;
             libudev-zero = pkgs.libudev-zero;
             libusb1 = pkgs.libusb1;
-            macdylibbundler = pkgs.macdylibbundler;
           };
         }
       );

@@ -30,7 +30,6 @@
   postgresql_16,
   nodejs_20,
   pnpm,
-  macdylibbundler
 }:
 
 stdenv.mkDerivation (finalAttrs: {
