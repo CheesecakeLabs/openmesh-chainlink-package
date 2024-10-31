@@ -37,8 +37,6 @@
             pkgs = pkgs;
             lib = pkgs.lib;
             stdenv = pkgs.stdenv;
-            buildGoModule = pkgs.buildGoModule;
-            buildGoPackage = pkgs.buildGoPackage;
             fetchFromGitHub = pkgs.fetchFromGitHub;
             git = pkgs.git;
             python3 = pkgs.python3;
@@ -47,6 +45,11 @@
             libobjc = pkgs.darwin.libobjc;
             IOKit = pkgs.darwin.IOKit;
             jq = pkgs.jq;
+            go = pkgs.go;
+            nodejs_20 = pkgs.nodejs_20;
+            libgcc = pkgs.libgcc;
+            postgresql_16 = pkgs.postgresql_16;
+            pnpm = pkgs.pnpm;
             gnumake = pkgs.gnumake;
             gencodec = self.packages.${system}.gencodec;
             python3Packages = pkgs.python3Packages;

@@ -16,26 +16,31 @@
   protoc-gen-go,
   protoc-gen-go-grpc,
   foundry-bin,
+  libgcc,
   curl,
   go-ethereum,
+  go,
   gotools,
   gopls,
   delve,
   github-cli,
   pkg-config,
   libudev-zero,
-  libusb1
+  libusb1,
+  postgresql_16,
+  nodejs_20,
+  pnpm
 }:
 
-stdenv.mkDerivation {
+stdenv.mkDerivation (finalAttrs: {
   pname = "chainlink";
-  version = "2.17.0";
+  version = "2.18.0-rc2";
 
   src = fetchFromGitHub {
     owner = "smartcontractkit";
     repo = "chainlink";
-    rev = "v${version}";
-    sha256 = "0dyhs7g95abbn3r43camlwwwxnnm9xd3k8v13hkrr25cqw9ggfsi";
+    rev = "v2.18.0-rc2";
+    sha256 = "sha256-av5SjX7tVGOoioxrxrwBD+zyyggWQSiYBXD7IvhjYOc=";
     leaveDotGit = true;
   };
 
@@ -52,9 +57,11 @@ stdenv.mkDerivation {
     foundry-bin
     curl
     go-ethereum
-    pkgs.postgresql_16
-    pkgs.nodejs-20_x
-    pkgs.pnpm
+    libgcc
+    postgresql_16
+    nodejs_20
+    go
+    pnpm
     coreutils
     gotools
     gopls
@@ -81,32 +88,25 @@ stdenv.mkDerivation {
     # Override $HOME to be writable
     export HOME=$(pwd)
 
-    # Unset GOFLAGS specifically for go mod download
-    echo "Downloading Go dependencies without GOFLAGS..."
-    env -u GOFLAGS go mod download
-
-    # Re-set GOFLAGS for the build process
-    export GOFLAGS="-ldflags '-X github.com/smartcontractkit/chainlink/v2/core/static.Version=v${version} -X github.com/smartcontractkit/chainlink/v2/core/static.Sha=5ebb63266ca697f0649633641bbccb436c2c18bb'"
-
     echo "Setting NPM strict-ssl to false for this build..."
     npm config set strict-ssl false
     npm config rm proxy 
     npm config rm https-proxy
   '';
 
-  # The main build process
-  buildPhase = ''
-    make build
-  '';
-
   # Installation phase to install the Chainlink binary
   installPhase = ''
-    make install
-    cp -r $src $out
+    GOFLAGS="-ldflags '-X github.com/smartcontractkit/chainlink/v2/core/static.Version=2.17.0 -X github.com/smartcontractkit/chainlink/v2/core/static.Sha=5ebb63266ca697f0649633641bbccb436c2c18bb'" make install
+    
+    mkdir -p "$out"
+    cp -r build/bin "$out/bin"
   '';
 
   # Environment setup for development shells
   shellHook = ''
+    # Add fix for macOS
+    ${if stdenv.isDarwin then "source ./nix-darwin-shell-hook.sh" else ""}
+
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$PATH
     echo "GOPATH set to $GOPATH"
@@ -120,4 +120,4 @@ stdenv.mkDerivation {
     maintainers = [ "brunonascdev" ];
     platforms = platforms.unix;
   };
-}
+})
