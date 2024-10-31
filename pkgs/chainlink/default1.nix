@@ -81,7 +81,6 @@ stdenv.mkDerivation (finalAttrs: {
   propagatedBuildInputs = lib.optionals stdenv.isDarwin [
     libobjc
     IOKit
-    macdylibbundler
   ];
 
   # Set up environment and build flags
