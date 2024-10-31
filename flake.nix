@@ -33,7 +33,7 @@
             buildGoModule = pkgs.buildGoModule;
             fetchFromGitHub = pkgs.fetchFromGitHub;
           };
-          chainlink = import ./pkgs/chainlink/default.nix {
+          chainlink = import ./pkgs/chainlink/default1.nix {
             pkgs = pkgs;
             lib = pkgs.lib;
             stdenv = pkgs.stdenv;

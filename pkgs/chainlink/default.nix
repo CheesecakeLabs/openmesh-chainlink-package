@@ -52,6 +52,7 @@ buildGoModule rec {
     repo = "chainlink";
     rev = "v${version}";
     sha256 = "0dyhs7g95abbn3r43camlwwwxnnm9xd3k8v13hkrr25cqw9ggfsi";
+    leaveDotGit = true;
   };
 
   # Vendor dependencies to avoid network access during the build
@@ -99,26 +100,33 @@ buildGoModule rec {
     # this line removes a bug where value of $HOME is set to a non-writable /homeless-shelter dir
     export HOME=$(pwd)
 
+    # Unset GOFLAGS for the go mod download command to avoid unknown flags error
+    echo "Downloading Go dependencies without GOFLAGS..."
+    env -u GOFLAGS go mod download
+
+    # Restore GOFLAGS for the rest of the build process
+    export GOFLAGS="-ldflags '-X github.com/smartcontractkit/chainlink/v2/core/static.Version=v${version} -X github.com/smartcontractkit/chainlink/v2/core/static.Sha=5ebb63266ca697f0649633641bbccb436c2c18bb'"
+
     echo "Setting NPM strict-ssl to false for this build..."
     npm config set strict-ssl false
     npm config rm proxy 
     npm config rm https-proxy
   '';
 
-  # Installation phase
-  installPhase = ''
-    which gencodec
-    make install
-    # echo "Installing Chainlink binaries..."
-    # mkdir -p $out/bin
-    # cp ./bin/chainlink $out/bin/chainlink
-  '';
+  # "-X github.com/smartcontractkit/chainlink/v2/core/static.Version=$VERSION -X github.com/smartcontractkit/chainlink/v2/core/static.Sha=$COMMIT_SHA"
+
+  # ldflags = [ "-s" "-w" "-X github.com/smartcontractkit/chainlink/v2/core/static.Version=v${version}" ];
 
   # Platform-specific fixes for macOS
   propagatedBuildInputs = lib.optionals stdenv.isDarwin [
     libobjc
     IOKit
   ];
+
+  installPhase = ''
+    make install
+    cp -r $src $out
+  '';
 
   # Environment setup to ensure Go paths are correctly set
   shellHook = ''
