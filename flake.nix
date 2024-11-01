@@ -48,6 +48,7 @@
             go = pkgs.go;
             nodejs_20 = pkgs.nodejs_20;
             libgcc = pkgs.libgcc;
+            patchelf = pkgs.patchelf;
             postgresql_16 = pkgs.postgresql_16;
             pnpm = pkgs.pnpm;
             gnumake = pkgs.gnumake;
