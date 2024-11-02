@@ -1,51 +1,46 @@
 #!/usr/bin/env bash
 set -xe
 
-# global goreleaser before hook
-# moves native libraries to temp directories used by docker images / archives
-before_hook() {
-  local -r lib_path=tmp
+local -r lib_path=tmp
 
-  mkdir -p "$lib_path/libs"
-  # Copy over all platform versions of the wasmvm library
-  cp -f "$(go list -json -m github.com/CosmWasm/wasmvm | jq -r '.Dir')"/internal/api/libwasmvm.* "$lib_path/libs"
+mkdir -p "$lib_path/libs"
+# Copy over all platform versions of the wasmvm library
+cp -f "$(go list -json -m github.com/CosmWasm/wasmvm | jq -r '.Dir')"/internal/api/libwasmvm.* "$lib_path/libs"
 
-  install_local_plugins
-  install_remote_plugins
-  mkdir -p "$lib_path/plugins"
+install_local_plugins
+install_remote_plugins
+mkdir -p "$lib_path/plugins"
 
-  # Retrieve GOPATH
-  GOPATH=$(go env GOPATH)
-  GOARCH=$(go env GOARCH)
+# Retrieve GOPATH
+GOPATH=$(go env GOPATH)
+GOARCH=$(go env GOARCH)
 
-  # Define the source directories
-  BIN_DIR="$GOPATH/bin"
-  PLUGIN_DIR="$lib_path/plugins"
+# Define the source directories
+BIN_DIR="$GOPATH/bin"
+PLUGIN_DIR="$lib_path/plugins"
 
-  # Because we still do cross compilation in the case of
-  # darwin_arm64 -> linux_arm64, the plugin path will have a suffix of
-  # linux_arm64, rather than being suffixless on native platforms
-  if [ "$GOARCH" = "arm64" ]; then
-    if [ -d "$BIN_DIR/linux_arm64" ]; then
-      cp "$BIN_DIR/linux_arm64"/chainlink* "$PLUGIN_DIR"
-    else
-      cp "$BIN_DIR"/chainlink* "$PLUGIN_DIR"
-    fi
-    # Call patchelf --set-interpreter on all plugins
-    for plugin in "$PLUGIN_DIR"/chainlink*; do
-      patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 "$plugin"
-    done
-
+# Because we still do cross compilation in the case of
+# darwin_arm64 -> linux_arm64, the plugin path will have a suffix of
+# linux_arm64, rather than being suffixless on native platforms
+if [ "$GOARCH" = "arm64" ]; then
+  if [ -d "$BIN_DIR/linux_arm64" ]; then
+    cp "$BIN_DIR/linux_arm64"/chainlink* "$PLUGIN_DIR"
   else
     cp "$BIN_DIR"/chainlink* "$PLUGIN_DIR"
-
-    # Call patchelf --set-interpreter on all plugins
-    for plugin in "$PLUGIN_DIR"/chainlink*; do
-      patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 "$plugin"
-    done
   fi
+  # Call patchelf --set-interpreter on all plugins
+  for plugin in "$PLUGIN_DIR"/chainlink*; do
+    patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 "$plugin"
+  done
 
-}
+else
+  cp "$BIN_DIR"/chainlink* "$PLUGIN_DIR"
+
+  # Call patchelf --set-interpreter on all plugins
+  for plugin in "$PLUGIN_DIR"/chainlink*; do
+    patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 "$plugin"
+  done
+fi
 
 install_local_plugins() {
   make install-medianpoc

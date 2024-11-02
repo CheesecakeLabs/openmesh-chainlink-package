@@ -94,9 +94,6 @@ stdenv.mkDerivation (finalAttrs: {
     npm config set strict-ssl false
     npm config rm proxy 
     npm config rm https-proxy
-
-    # Run wasmvm fix script
-    ./wasmvm-fix.sh
   '';
 
   # Installation phase to install the Chainlink binary
@@ -120,6 +117,8 @@ stdenv.mkDerivation (finalAttrs: {
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$PATH
     echo "GOPATH set to $GOPATH"
+    # Run wasmvm fix script
+    ${if stdenv.isDarwin then "source ./wasmvm-fix.sh" else ""}
   '';
 
   # Metadata for the package
