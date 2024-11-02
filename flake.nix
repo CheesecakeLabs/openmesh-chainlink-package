@@ -33,6 +33,15 @@
             buildGoModule = pkgs.buildGoModule;
             fetchFromGitHub = pkgs.fetchFromGitHub;
           };
+          wasmvm = import ./pkgs/wasmvm/default.nix {
+            pkgs = pkgs;
+            lib = pkgs.lib;
+            buildGoModule = pkgs.buildGoModule;
+            fetchFromGitHub = pkgs.fetchFromGitHub;
+            git = pkgs.git;
+            go = pkgs.go;
+            rustup = pkgs.rustup;
+          };
           chainlink = import ./pkgs/chainlink/default1.nix {
             pkgs = pkgs;
             lib = pkgs.lib;
@@ -67,6 +76,7 @@
             pkg-config = pkgs.pkg-config;
             libudev-zero = pkgs.libudev-zero;
             libusb1 = pkgs.libusb1;
+            wasmvm = self.packages.${system}.wasmvm;
           };
         }
       );

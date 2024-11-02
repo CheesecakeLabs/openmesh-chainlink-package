@@ -31,6 +31,7 @@
   nodejs_20,
   pnpm,
   patchelf,
+  wasmvm,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -73,6 +74,7 @@ stdenv.mkDerivation (finalAttrs: {
     gnumake
     gencodec
     patchelf
+    wasmvm
   ] ++ lib.optionals stdenv.isLinux [
     pkg-config
     libudev-zero
@@ -103,7 +105,15 @@ stdenv.mkDerivation (finalAttrs: {
 
     make install
 
-    make chainlink
+    git clone https://github.com/CosmWasm/wasmvm.git
+
+    cd wasmvm
+
+    make build-libwasmvm
+
+    cp libwasmvm.* tmp/libs
+
+    # make chainlink
 
     # Copy the binary to the output directory
     mkdir -p "$out/bin"
@@ -117,8 +127,6 @@ stdenv.mkDerivation (finalAttrs: {
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$PATH
     echo "GOPATH set to $GOPATH"
-    # Run wasmvm fix script
-    ${if stdenv.isDarwin then "source ./wasmvm-fix.sh" else ""}
   '';
 
   # Metadata for the package
