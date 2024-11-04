@@ -46,7 +46,7 @@ stdenv.mkDerivation (finalAttrs: {
     cargo build --release
     cd ..
     mkdir -p $out/internal/api
-    cp libwasmvm/target/release/libwasmvm.dylib $out/internal/api
+    cp libwasmvm/target/release/libwasmvm.os $out/internal/api
     cp libwasmvm/bindings.h $out/internal/api
   '';
 
