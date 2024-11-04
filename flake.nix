@@ -36,11 +36,14 @@
           wasmvm = import ./pkgs/wasmvm/default.nix {
             pkgs = pkgs;
             lib = pkgs.lib;
-            buildGoModule = pkgs.buildGoModule;
+            stdenv = pkgs.stdenv;
             fetchFromGitHub = pkgs.fetchFromGitHub;
             git = pkgs.git;
             go = pkgs.go;
             rustup = pkgs.rustup;
+            libobjc = pkgs.darwin.libobjc;
+            IOKit = pkgs.darwin.IOKit;
+            libiconv = pkgs.libiconv;
           };
           chainlink = import ./pkgs/chainlink/default1.nix {
             pkgs = pkgs;
@@ -52,6 +55,7 @@
             coreutils = pkgs.coreutils;
             toybox = pkgs.toybox;
             libobjc = pkgs.darwin.libobjc;
+            llvmPackages_12.bintools = pkgs.llvmPackages_12.bintools;
             IOKit = pkgs.darwin.IOKit;
             jq = pkgs.jq;
             go = pkgs.go;

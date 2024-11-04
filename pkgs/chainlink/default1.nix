@@ -32,6 +32,7 @@
   pnpm,
   patchelf,
   wasmvm,
+  llvmPackages_12
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -75,6 +76,7 @@ stdenv.mkDerivation (finalAttrs: {
     gencodec
     patchelf
     wasmvm
+    llvmPackages_12.bintools
   ] ++ lib.optionals stdenv.isLinux [
     pkg-config
     libudev-zero
@@ -102,16 +104,15 @@ stdenv.mkDerivation (finalAttrs: {
   installPhase = ''
     # run sed to replace GOFLAG lines
     sed -i "" 's/GO_LDFLAGS := $(shell tools\/bin\/ldflags)//g' GNUmakefile && sed -i "" 's/\$(GO_LDFLAGS)/-X github.com\/smartcontractkit\/chainlink\/v2\/core\/static.Version=2.18.0 -X github.com\/smartcontractkit\/chainlink\/v2\/core\/static.Sha=0e855379b9f4ff54944f8ee9918b7bbfc0a67469/g' GNUmakefile
-
+    
     make install
 
-    git clone https://github.com/CosmWasm/wasmvm.git
+    ls -la
 
-    cd wasmvm
+    mkdir -p source/go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.2.4/internal/api
 
-    make build-libwasmvm
-
-    cp libwasmvm.* tmp/libs
+    cp ${wasmvm}/internal/api/libwasmvm.dylib source/go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.2.4/internal/api/
+    cp ${wasmvm}/internal/api/bindings.h source/go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.2.4/internal/api/
 
     # make chainlink
 

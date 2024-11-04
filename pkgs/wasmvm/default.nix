@@ -6,7 +6,8 @@
   libobjc,
   IOKit,
   go,
-  rustup
+  rustup,
+  libiconv
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -15,9 +16,9 @@ stdenv.mkDerivation (finalAttrs: {
 
   src = fetchFromGitHub {
     owner = "CosmWasm";
-    repo = pname;
-    rev = "v${version}";
-    sha256 = "";
+    repo = finalAttrs.pname;
+    rev = "v${finalAttrs.version}";
+    sha256 = "sha256-oY2rfPs6EGrizj0/Hrc4cnxltOrbaIfANoM/SZttaEU=";
     leaveDotGit = true;
   };
 
@@ -25,6 +26,7 @@ stdenv.mkDerivation (finalAttrs: {
     git
     go
     rustup
+    libiconv
   ];
 
   # Platform-specific dependencies for Darwin (macOS)
@@ -33,9 +35,19 @@ stdenv.mkDerivation (finalAttrs: {
     IOKit
   ];
 
-  # Installation phase to install the Chainlink binary
+  preBuild = ''
+    # Override $HOME to be writable
+    export HOME=$(pwd)
+  '';
+
   installPhase = ''
-    make build-libwasmvm
+    cd libwasmvm
+    rustup default stable
+    cargo build --release
+    cd ..
+    mkdir -p $out/internal/api
+    cp libwasmvm/target/release/libwasmvm.dylib $out/internal/api
+    cp libwasmvm/bindings.h $out/internal/api
   '';
 
   dontFixup = true;
