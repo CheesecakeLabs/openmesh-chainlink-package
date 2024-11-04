@@ -31,24 +31,21 @@
   nodejs_20,
   pnpm,
   patchelf,
-  wasmvm,
+  # wasmvm,
   llvmPackages_12
 }:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "chainlink";
-  version = "2.18.0-rc2";
+  version = "2.18.0";
 
   src = fetchFromGitHub {
     owner = "smartcontractkit";
-    repo = "chainlink";
-    rev = "v2.18.0-rc2";
-    sha256 = "sha256-juyRD6CJ54pbKkyBt7odYkwGx2kmUl5yT3PT7Q6DDBM=";
+    repo = finalAttrs.pname;
+    rev = "v${finalAttrs.version}";
+    sha256 = "sha256-yeNAhsNYr1D//8HdQZkVMsBHq9QFhfgfNdwDYmOObBw=";
     leaveDotGit = true;
   };
-
-  # Optional patches can be applied here if necessary
-  patches = [];
 
   nativeBuildInputs = [
     git
@@ -75,7 +72,7 @@ stdenv.mkDerivation (finalAttrs: {
     gnumake
     gencodec
     patchelf
-    wasmvm
+    # wasmvm
     llvmPackages_12.bintools
   ] ++ lib.optionals stdenv.isLinux [
     pkg-config
@@ -107,12 +104,10 @@ stdenv.mkDerivation (finalAttrs: {
     
     make install
 
-    ls -la
+    # mkdir -p source/go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.2.4/internal/api
 
-    mkdir -p source/go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.2.4/internal/api
-
-    cp ${wasmvm}/internal/api/libwasmvm.dylib source/go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.2.4/internal/api/
-    cp ${wasmvm}/internal/api/bindings.h source/go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.2.4/internal/api/
+    # cp ${wasmvm}/internal/api/libwasmvm.dylib source/go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.2.4/internal/api/
+    # cp ${wasmvm}/internal/api/bindings.h source/go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.2.4/internal/api/
 
     # make chainlink
 

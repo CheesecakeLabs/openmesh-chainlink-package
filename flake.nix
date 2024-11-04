@@ -33,18 +33,18 @@
             buildGoModule = pkgs.buildGoModule;
             fetchFromGitHub = pkgs.fetchFromGitHub;
           };
-          wasmvm = import ./pkgs/wasmvm/default.nix {
-            pkgs = pkgs;
-            lib = pkgs.lib;
-            stdenv = pkgs.stdenv;
-            fetchFromGitHub = pkgs.fetchFromGitHub;
-            git = pkgs.git;
-            go = pkgs.go;
-            cargo = pkgs.cargo;
-            libobjc = pkgs.darwin.libobjc;
-            IOKit = pkgs.darwin.IOKit;
-            libiconv = pkgs.libiconv;
-          };
+          # wasmvm = import ./pkgs/wasmvm/default.nix {
+          #   pkgs = pkgs;
+          #   lib = pkgs.lib;
+          #   stdenv = pkgs.stdenv;
+          #   fetchFromGitHub = pkgs.fetchFromGitHub;
+          #   git = pkgs.git;
+          #   go = pkgs.go;
+          #   cargo = pkgs.cargo;
+          #   libobjc = pkgs.darwin.libobjc;
+          #   IOKit = pkgs.darwin.IOKit;
+          #   libiconv = pkgs.libiconv;
+          # };
           chainlink = import ./pkgs/chainlink/default1.nix {
             pkgs = pkgs;
             lib = pkgs.lib;
@@ -80,7 +80,7 @@
             pkg-config = pkgs.pkg-config;
             libudev-zero = pkgs.libudev-zero;
             libusb1 = pkgs.libusb1;
-            wasmvm = self.packages.${system}.wasmvm;
+            # wasmvm = self.packages.${system}.wasmvm;
           };
         }
       );
