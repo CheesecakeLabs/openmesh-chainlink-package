@@ -40,7 +40,7 @@
             fetchFromGitHub = pkgs.fetchFromGitHub;
             git = pkgs.git;
             go = pkgs.go;
-            rustup = pkgs.rustup;
+            cargo = pkgs.cargo;
             libobjc = pkgs.darwin.libobjc;
             IOKit = pkgs.darwin.IOKit;
             libiconv = pkgs.libiconv;
