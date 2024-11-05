@@ -32,7 +32,6 @@
   pnpm,
   patchelf,
   # wasmvm,
-  # dyld,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -73,7 +72,6 @@ stdenv.mkDerivation (finalAttrs: {
     gencodec
     patchelf
     # wasmvm
-    # dyld
   ] ++ lib.optionals stdenv.isLinux [
     pkg-config
     libudev-zero
