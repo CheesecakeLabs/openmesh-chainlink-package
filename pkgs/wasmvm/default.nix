@@ -3,8 +3,6 @@
   stdenv,
   fetchFromGitHub,
   git,
-  libobjc,
-  IOKit,
   go,
   rustup,
   libiconv
@@ -29,12 +27,6 @@ stdenv.mkDerivation (finalAttrs: {
     libiconv
   ];
 
-  # Platform-specific dependencies for Darwin (macOS)
-  propagatedBuildInputs = lib.optionals stdenv.isDarwin [
-    libobjc
-    IOKit
-  ];
-
   preBuild = ''
     # Override $HOME to be writable
     export HOME=$(pwd)
@@ -51,13 +43,6 @@ stdenv.mkDerivation (finalAttrs: {
   '';
 
   dontFixup = true;
-
-  # Environment setup for development shells
-  shellHook = ''
-    export GOPATH=$HOME/go
-    export PATH=$GOPATH/bin:$PATH
-    echo "GOPATH set to $GOPATH"
-  '';
 
   # Metadata for the package
   meta = with lib; {

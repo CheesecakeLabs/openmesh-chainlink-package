@@ -45,7 +45,7 @@ stdenv.mkDerivation (finalAttrs: {
     repo = finalAttrs.pname;
     rev = "v${finalAttrs.version}";
     sha256 = "sha256-9vn3QlmeR5auffTzHwHAH5ZVtx1R8MxAppLzS30v7wc=";
-    leaveDotGit = true;
+    fetchSubmodules = true;
   };
 
   nativeBuildInputs =
@@ -89,6 +89,8 @@ stdenv.mkDerivation (finalAttrs: {
     IOKit
   ];
 
+  outputs = [ "out" ];
+
   # Set up environment and build flags
   preBuild = ''
     # Override $HOME to be writable
@@ -112,17 +114,10 @@ stdenv.mkDerivation (finalAttrs: {
     cp chainlink "$out/bin/chainlink"
 
     # Set the rpath using patchelf
-    patchelf --set-rpath "${wasmvm}/lib" "$out/bin/chainlink"
+    # patchelf --set-rpath "${wasmvm}/lib"
   '';
 
-  dontFixup = true;
-
-  # Environment setup for development shells
-  shellHook = ''
-    export GOPATH=$HOME/go
-    export PATH=$GOPATH/bin:$PATH
-    echo "GOPATH set to $GOPATH"
-  '';
+  # dontFixup = true;
 
   # Metadata for the package
   meta = with lib; {

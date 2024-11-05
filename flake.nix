@@ -37,8 +37,6 @@
             git = pkgs.git;
             go = pkgs.go;
             rustup = pkgs.rustup;
-            libobjc = pkgs.darwin.libobjc;
-            IOKit = pkgs.darwin.IOKit;
             libiconv = pkgs.libiconv;
           };
           chainlink = import ./pkgs/chainlink/default.nix {
@@ -77,19 +75,23 @@
             lib = pkgs.lib;
             stdenv = pkgs.stdenv;
             fetchFromGitHub = pkgs.fetchFromGitHub;
+          };
+          chainlink_slim = import ./pkgs/chainlink/slim.nix {
+            lib = pkgs.lib;
+            fetchFromGitHub = pkgs.fetchFromGitHub;
             buildGoModule = pkgs.buildGoModule;
           };
         }
       );
 
       # Make Chainlink the default package
-      defaultPackage = forAllSystems (system: self.packages.${system}.chainlink);
+      defaultPackage = forAllSystems (system: self.packages.${system}.chainlink_slim);
 
       # Define devShell for development
       devShell = forAllSystems (system: 
         nixpkgsFor.${system}.mkShell {
           nativeBuildInputs = [
-            self.packages.${system}.chainlink
+            self.packages.${system}.chainlink_slim
             self.packages.${system}.gencodec
             self.packages.${system}.wasmvm
             nixpkgsFor.${system}.go
