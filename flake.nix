@@ -55,7 +55,6 @@
             coreutils = pkgs.coreutils;
             toybox = pkgs.toybox;
             libobjc = pkgs.darwin.libobjc;
-            llvmPackages_12.bintools = pkgs.llvmPackages_12.bintools;
             IOKit = pkgs.darwin.IOKit;
             jq = pkgs.jq;
             go = pkgs.go;
@@ -80,6 +79,7 @@
             pkg-config = pkgs.pkg-config;
             libudev-zero = pkgs.libudev-zero;
             libusb1 = pkgs.libusb1;
+            dyld = pkgs.darwin.dyld;
             # wasmvm = self.packages.${system}.wasmvm;
           };
         }

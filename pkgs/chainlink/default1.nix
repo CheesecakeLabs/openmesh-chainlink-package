@@ -32,7 +32,7 @@
   pnpm,
   patchelf,
   # wasmvm,
-  llvmPackages_12
+  dyld,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -73,7 +73,7 @@ stdenv.mkDerivation (finalAttrs: {
     gencodec
     patchelf
     # wasmvm
-    llvmPackages_12.bintools
+    dyld
   ] ++ lib.optionals stdenv.isLinux [
     pkg-config
     libudev-zero
@@ -101,13 +101,12 @@ stdenv.mkDerivation (finalAttrs: {
   installPhase = ''
     # run sed to replace GOFLAG lines
     sed -i "" 's/GO_LDFLAGS := $(shell tools\/bin\/ldflags)//g' GNUmakefile && sed -i "" 's/\$(GO_LDFLAGS)/-X github.com\/smartcontractkit\/chainlink\/v2\/core\/static.Version=2.18.0 -X github.com\/smartcontractkit\/chainlink\/v2\/core\/static.Sha=0e855379b9f4ff54944f8ee9918b7bbfc0a67469/g' GNUmakefile
+
+    which find
     
     make install
 
     # mkdir -p source/go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.2.4/internal/api
-
-    # cp ${wasmvm}/internal/api/libwasmvm.dylib source/go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.2.4/internal/api/
-    # cp ${wasmvm}/internal/api/bindings.h source/go/pkg/mod/github.com/!cosm!wasm/wasmvm@v1.2.4/internal/api/
 
     # make chainlink
 
@@ -115,6 +114,12 @@ stdenv.mkDerivation (finalAttrs: {
     mkdir -p "$out/bin"
     cp chainlink "$out/bin/chainlink"
   '';
+
+  env = lib.optionalAttrs stdenv.hostPlatform.isDarwin {
+    # Ensure that there is enough space for the `fixDarwinDylibNames` hook to
+    # update the install names of the output dylibs.
+    NIX_LDFLAGS = "-headerpad_max_install_names";
+  };
 
   dontFixup = true;
 
