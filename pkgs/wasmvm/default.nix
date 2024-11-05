@@ -6,7 +6,7 @@
   libobjc,
   IOKit,
   go,
-  cargo,
+  rustup,
   libiconv
 }:
 
@@ -25,7 +25,7 @@ stdenv.mkDerivation (finalAttrs: {
   nativeBuildInputs = [
     git
     go
-    cargo
+    rustup
     libiconv
   ];
 
@@ -42,12 +42,12 @@ stdenv.mkDerivation (finalAttrs: {
 
   installPhase = ''
     cd libwasmvm
-    # rustup default stable
+    rustup default stable
     cargo build --release
     cd ..
-    mkdir -p $out/internal/api
-    cp libwasmvm/target/release/libwasmvm.os $out/internal/api
-    cp libwasmvm/bindings.h $out/internal/api
+    mkdir -p $out/lib
+    cp libwasmvm/target/release/libwasmvm.dylib $out/lib
+    cp libwasmvm/bindings.h $out/lib
   '';
 
   dontFixup = true;

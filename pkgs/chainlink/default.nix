@@ -1,103 +1,97 @@
 {
-  pkgs,
-  lib,
-  stdenv,
-  buildGoModule,
-  buildGoPackage,
-  fetchFromGitHub,
+  go,
+  postgresql_16,
   git,
   python3,
-  libobjc,
-  IOKit,
-  toybox,
-  coreutils,
-  jq,
-  gnumake,
-  gencodec,
   python3Packages,
   protobuf,
   protoc-gen-go,
   protoc-gen-go-grpc,
-  foundry-bin,
   curl,
+  nodejs_20,
+  pnpm,
   go-ethereum,
+  go-mockery,
   gotools,
   gopls,
   delve,
+  golangci-lint,
   github-cli,
+  jq,
+  libgcc,
+  coreutils,
+  toybox,
+  gnumake,
+  gencodec,
+  patchelf,
+  libobjc,
+  wasmvm,
   pkg-config,
   libudev-zero,
   libusb1,
+  IOKit,
+  pkgs,
+  lib,
+  stdenv,
+  fetchFromGitHub,
 }:
-with pkgs;
-let
-  go = go_1_21;
-  postgresql = postgresql_14;
-  nodejs = nodejs-18_x;
-  nodePackages = pkgs.nodePackages.override { inherit nodejs; };
-  pnpm = pnpm_9;
 
-  mkShell' = mkShell.override {
-    # The current nix default sdk for macOS fails to compile go projects, so we use a newer one for now.
-    stdenv = if stdenv.isDarwin then overrideSDK stdenv "11.0" else stdenv;
-  };
-in
-buildGoModule rec {
+stdenv.mkDerivation (finalAttrs: {
   pname = "chainlink";
-  version = "2.17.0"; # Example version, update as needed
+  version = "2.18.0";
 
-  # Fetch the Chainlink source code from GitHub
   src = fetchFromGitHub {
     owner = "smartcontractkit";
-    repo = "chainlink";
-    rev = "v${version}";
-    sha256 = "0dyhs7g95abbn3r43camlwwwxnnm9xd3k8v13hkrr25cqw9ggfsi";
+    repo = finalAttrs.pname;
+    rev = "v${finalAttrs.version}";
+    sha256 = "sha256-9vn3QlmeR5auffTzHwHAH5ZVtx1R8MxAppLzS30v7wc=";
     leaveDotGit = true;
   };
 
-  # Vendor dependencies to avoid network access during the build
-  proxyVendor = true;
-  vendorHash = "sha256-fb3DlXdrQw0NBKiOkblcModtLg4zDkBx+AKz/4vcFEY=";
-
-  doCheck = false;
-
-  outputs = [ "out" ];
-
-  # Include necessary dependencies
   nativeBuildInputs =
     [
-      git # To clone the repository and fetch dependencies
-      python3 # Python required by solc-select
-      python3Packages.pip # Python pip for package management
-      protobuf # Protobuf dependencies
-      protoc-gen-go # Protobuf dependencies
-      protoc-gen-go-grpc # Protobuf dependencies
-      foundry-bin # Foundry for building
-      curl # Curl for fetching
-      go-ethereum # geth for Ethereum interactions
-      postgresql_16 # PostgreSQL for database interactions
-      nodejs # Node.js v20 for required JS tooling
-      pnpm # pnpm v9 for package management
-      coreutils # Coreutils for basic utilities
-      gotools # Go tools
-      gopls # Go language server for editor support
-      delve # Delve for debugging
-      github-cli # GitHub CLI for interacting with GitHub
-      toybox # Toybox for additional tools
-      jq # jq for JSON processing
-      gnumake # GNU Make for building
-      gencodec # gencodec for Go code generation
+      go
+      postgresql_16
+      git
+      python3
+      python3Packages.pip
+      protobuf
+      protoc-gen-go
+      protoc-gen-go-grpc
+      curl
+      nodejs_20
+      pnpm
+      go-ethereum
+      go-mockery
+      gotools
+      gopls
+      delve
+      golangci-lint
+      github-cli
+      jq
+      libgcc
+      coreutils
+      toybox
+      gnumake
+      gencodec
+      patchelf
+      wasmvm
     ]
     ++ lib.optionals stdenv.isLinux [
-      # some dependencies needed for node-gyp on pnpm install
       pkg-config
       libudev-zero
       libusb1
     ];
 
-  # Build phase following the provided guide
-  buildPhase = ''
-    # this line removes a bug where value of $HOME is set to a non-writable /homeless-shelter dir
+  # Platform-specific dependencies for Darwin (macOS)
+  propagatedBuildInputs = lib.optionals stdenv.isDarwin [
+    libobjc
+    IOKit
+  ];
+
+  # Set up environment and build flags
+  preBuild = ''
+    # Override $HOME to be writable
     export HOME=$(pwd)
 
     echo "Setting NPM strict-ssl to false for this build..."
@@ -106,30 +100,36 @@ buildGoModule rec {
     npm config rm https-proxy
   '';
 
-  # Platform-specific fixes for macOS
-  propagatedBuildInputs = lib.optionals stdenv.isDarwin [
-    libobjc
-    IOKit
-  ];
-
+  # Installation phase to install the Chainlink binary
   installPhase = ''
+    # run sed to replace GOFLAG lines
+    sed -i "" 's/GO_LDFLAGS := $(shell tools\/bin\/ldflags)//g' GNUmakefile && sed -i "" 's/\$(GO_LDFLAGS)/-X github.com\/smartcontractkit\/chainlink\/v2\/core\/static.Version=2.18.0 -X github.com\/smartcontractkit\/chainlink\/v2\/core\/static.Sha=0e855379b9f4ff54944f8ee9918b7bbfc0a67469/g' GNUmakefile
+
     make install
-    cp -r $src $out
+
+    # Copy the binary to the output directory
+    mkdir -p "$out/bin"
+    cp chainlink "$out/bin/chainlink"
+
+    # Set the rpath using patchelf
+    patchelf --set-rpath "${wasmvm}/lib" "$out/bin/chainlink"
   '';
 
-  # Environment setup to ensure Go paths are correctly set
+  dontFixup = true;
+
+  # Environment setup for development shells
   shellHook = ''
     export GOPATH=$HOME/go
     export PATH=$GOPATH/bin:$PATH
     echo "GOPATH set to $GOPATH"
-    source ./nix-darwin-shell-hook.sh
   '';
 
-  # Package metadata
+  # Metadata for the package
   meta = with lib; {
     description = "Chainlink is a decentralized oracle network.";
     homepage = "https://github.com/smartcontractkit/chainlink";
-    license = with licenses; [ mit ];
-    maintainers = with maintainers; [ "brunonascdev" ];
+    license = licenses.mit;
+    maintainers = [ "brunonascdev" ];
+    platforms = platforms.unix;
   };
-}
+})

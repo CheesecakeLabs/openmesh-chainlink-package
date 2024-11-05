@@ -15,67 +15,13 @@
         "type": "github"
       }
     },
-    "flake-utils": {
-      "inputs": {
-        "systems": "systems"
-      },
-      "locked": {
-        "lastModified": 1726560853,
-        "narHash": "sha256-X6rJYSESBVr3hBoH0WbKE5KvhPU5bloyZ2L4K60/fPQ=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "c1dfcf08411b08f6b8615f7d8971a2bfa81d5e8a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "foundry": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": "nixpkgs"
-      },
-      "locked": {
-        "lastModified": 1728119511,
-        "narHash": "sha256-kJHt+BoDTc9aYXnmy7X+kQto9cT77lDKHAYp5FyY4OY=",
-        "owner": "shazow",
-        "repo": "foundry.nix",
-        "rev": "c45f6bc1f2110b1d209e116be203648a06a02f80",
-        "type": "github"
-      },
-      "original": {
-        "owner": "shazow",
-        "ref": "monthly",
-        "repo": "foundry.nix",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1666753130,
-        "narHash": "sha256-Wff1dGPFSneXJLI2c0kkdWTgxnQ416KE6X4KnFkgPYQ=",
+        "lastModified": 1730837510,
+        "narHash": "sha256-YQ06F86gDzDlLU3xVbM49HNhqPV24TVGeGopemKDAmI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f540aeda6f677354f1e7144ab04352f61aaa0118",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1730226221,
-        "narHash": "sha256-e5aiyUyPGntTDur2J035Z3AjwZ0/gX8c/YiRccl+4Zs=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "4dece45afd70bc24afe518ec5ce89c776ee57ba5",
+        "rev": "169f5639532ae118919a2a384eef2661e1cf6228",
         "type": "github"
       },
       "original": {
@@ -87,24 +33,7 @@
     "root": {
       "inputs": {
         "flake-compat": "flake-compat",
-        "flake-utils": "flake-utils",
-        "foundry": "foundry",
-        "nixpkgs": "nixpkgs_2"
-      }
-    },
-    "systems": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
+        "nixpkgs": "nixpkgs"
       }
     }
   },

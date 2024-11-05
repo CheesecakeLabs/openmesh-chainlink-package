@@ -4,12 +4,9 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs";
     flake-compat.url = "github:nix-community/flake-compat";
-    flake-utils.url = "github:numtide/flake-utils";
-    foundry.url = "github:shazow/foundry.nix/monthly";
-    foundry.inputs.flake-utils.follows = "flake-utils";
   };
 
-  outputs = { self, nixpkgs, foundry, ... }:
+  outputs = { self, nixpkgs, ... }:
     let
       # Supported architectures: x86_64 and aarch64
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
@@ -18,7 +15,6 @@
       # Import Nixpkgs for all systems
       nixpkgsFor = forAllSystems (system: import nixpkgs {
         inherit system;
-        overlays = [ foundry.overlay ];
       });
     in
     {
@@ -33,53 +29,55 @@
             buildGoModule = pkgs.buildGoModule;
             fetchFromGitHub = pkgs.fetchFromGitHub;
           };
-          # wasmvm = import ./pkgs/wasmvm/default.nix {
-          #   pkgs = pkgs;
-          #   lib = pkgs.lib;
-          #   stdenv = pkgs.stdenv;
-          #   fetchFromGitHub = pkgs.fetchFromGitHub;
-          #   git = pkgs.git;
-          #   go = pkgs.go;
-          #   cargo = pkgs.cargo;
-          #   libobjc = pkgs.darwin.libobjc;
-          #   IOKit = pkgs.darwin.IOKit;
-          #   libiconv = pkgs.libiconv;
-          # };
-          chainlink = import ./pkgs/chainlink/default1.nix {
+          wasmvm = import ./pkgs/wasmvm/default.nix {
             pkgs = pkgs;
             lib = pkgs.lib;
             stdenv = pkgs.stdenv;
             fetchFromGitHub = pkgs.fetchFromGitHub;
             git = pkgs.git;
-            python3 = pkgs.python3;
-            coreutils = pkgs.coreutils;
-            toybox = pkgs.toybox;
+            go = pkgs.go;
+            rustup = pkgs.rustup;
             libobjc = pkgs.darwin.libobjc;
             IOKit = pkgs.darwin.IOKit;
-            jq = pkgs.jq;
+            libiconv = pkgs.libiconv;
+          };
+          chainlink = import ./pkgs/chainlink/default.nix {
             go = pkgs.go;
-            nodejs_20 = pkgs.nodejs_20;
-            libgcc = pkgs.libgcc;
-            patchelf = pkgs.patchelf;
             postgresql_16 = pkgs.postgresql_16;
-            pnpm = pkgs.pnpm;
-            gnumake = pkgs.gnumake;
-            gencodec = self.packages.${system}.gencodec;
+            git = pkgs.git;
+            python3 = pkgs.python3;
             python3Packages = pkgs.python3Packages;
             protobuf = pkgs.protobuf;
             protoc-gen-go = pkgs.protoc-gen-go;
             protoc-gen-go-grpc = pkgs.protoc-gen-go-grpc;
-            foundry-bin = pkgs.foundry-bin;
             curl = pkgs.curl;
+            nodejs_20 = pkgs.nodejs_20;
+            pnpm = pkgs.pnpm;
             go-ethereum = pkgs.go-ethereum;
+            go-mockery = pkgs.go-mockery;
             gotools = pkgs.gotools;
             gopls = pkgs.gopls;
             delve = pkgs.delve;
+            golangci-lint = pkgs.golangci-lint;
             github-cli = pkgs.github-cli;
+            jq = pkgs.jq;
+            libgcc = pkgs.libgcc;
+            coreutils = pkgs.coreutils;
+            toybox = pkgs.toybox;
+            gnumake = pkgs.gnumake;
+            gencodec = self.packages.${system}.gencodec;
+            patchelf = pkgs.patchelf;
+            libobjc = pkgs.darwin.libobjc;
+            wasmvm = self.packages.${system}.wasmvm;
             pkg-config = pkgs.pkg-config;
             libudev-zero = pkgs.libudev-zero;
             libusb1 = pkgs.libusb1;
-            # wasmvm = self.packages.${system}.wasmvm;
+            IOKit = pkgs.darwin.IOKit;
+            pkgs = pkgs;
+            lib = pkgs.lib;
+            stdenv = pkgs.stdenv;
+            fetchFromGitHub = pkgs.fetchFromGitHub;
+            buildGoModule = pkgs.buildGoModule;
           };
         }
       );
@@ -93,16 +91,41 @@
           nativeBuildInputs = [
             self.packages.${system}.chainlink
             self.packages.${system}.gencodec
+            self.packages.${system}.wasmvm
             nixpkgsFor.${system}.go
+            nixpkgsFor.${system}.postgresql_16
             nixpkgsFor.${system}.git
             nixpkgsFor.${system}.python3
-            nixpkgsFor.${system}.postgresql_16
-            nixpkgsFor.${system}.nodejs
+            nixpkgsFor.${system}.python3Packages.pip
+            nixpkgsFor.${system}.protobuf
+            nixpkgsFor.${system}.protoc-gen-go
+            nixpkgsFor.${system}.protoc-gen-go-grpc
+            nixpkgsFor.${system}.curl
+            nixpkgsFor.${system}.nodejs_20
             nixpkgsFor.${system}.pnpm
+            nixpkgsFor.${system}.go-ethereum
+            nixpkgsFor.${system}.go-mockery
+            nixpkgsFor.${system}.gotools
+            nixpkgsFor.${system}.gopls
+            nixpkgsFor.${system}.delve
+            nixpkgsFor.${system}.golangci-lint
+            nixpkgsFor.${system}.github-cli
+            nixpkgsFor.${system}.jq
+            nixpkgsFor.${system}.libgcc
             nixpkgsFor.${system}.coreutils
             nixpkgsFor.${system}.toybox
-            nixpkgsFor.${system}.jq
-          ];
+            nixpkgsFor.${system}.gnumake
+            nixpkgsFor.${system}.patchelf
+            nixpkgsFor.${system}.libiconv
+            nixpkgsFor.${system}.rustup
+          ] ++ (nixpkgsFor.${system}.lib.optionals nixpkgsFor.${system}.stdenv.isDarwin [
+            nixpkgsFor.${system}.darwin.libobjc
+            nixpkgsFor.${system}.darwin.IOKit
+          ]) ++ (nixpkgsFor.${system}.lib.optionals nixpkgsFor.${system}.stdenv.isLinux [
+            nixpkgsFor.${system}.pkg-config
+            nixpkgsFor.${system}.libudev-zero
+            nixpkgsFor.${system}.libusb1
+          ]);
         }
       );
 
