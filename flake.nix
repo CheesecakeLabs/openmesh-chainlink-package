@@ -12,9 +12,12 @@
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
 
-      # Import Nixpkgs for all systems
+      # Import Nixpkgs for all systems, add allowUnfree and allowBroken
       nixpkgsFor = forAllSystems (system: import nixpkgs {
         inherit system;
+        config = {
+          allowUnfree = true;
+        };
       });
     in
     {
@@ -76,24 +79,26 @@
             stdenv = pkgs.stdenv;
             fetchFromGitHub = pkgs.fetchFromGitHub;
           };
-          chainlink_slim = import ./pkgs/chainlink/slim.nix {
-            lib = pkgs.lib;
-            fetchFromGitHub = pkgs.fetchFromGitHub;
-            buildGoModule = pkgs.buildGoModule;
-          };
+          # chainlink_slim = import ./pkgs/chainlink/default1.nix {
+          #   lib = pkgs.lib;
+          #   fetchFromGitHub = pkgs.fetchFromGitHub;
+          #   buildGoModule = pkgs.buildGoModule;
+          #   gencodec = self.packages.${system}.gencodec;
+          # };
         }
       );
 
       # Make Chainlink the default package
-      defaultPackage = forAllSystems (system: self.packages.${system}.chainlink_slim);
+      defaultPackage = forAllSystems (system: self.packages.${system}.chainlink);
 
       # Define devShell for development
       devShell = forAllSystems (system: 
         nixpkgsFor.${system}.mkShell {
           nativeBuildInputs = [
-            self.packages.${system}.chainlink_slim
             self.packages.${system}.gencodec
+            # self.packages.${system}.chainlink_slim
             self.packages.${system}.wasmvm
+            self.packages.${system}.chainlink
             nixpkgsFor.${system}.go
             nixpkgsFor.${system}.postgresql_16
             nixpkgsFor.${system}.git

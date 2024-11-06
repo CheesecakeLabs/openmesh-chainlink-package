@@ -44,7 +44,7 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "smartcontractkit";
     repo = finalAttrs.pname;
     rev = "v${finalAttrs.version}";
-    sha256 = "sha256-9vn3QlmeR5auffTzHwHAH5ZVtx1R8MxAppLzS30v7wc=";
+    sha256 = "sha256-ifu+5fzujIKsZQiOA+3bsh5L34dYfVFG6Nk3p+N5kO4=";
     fetchSubmodules = true;
   };
 
@@ -113,11 +113,11 @@ stdenv.mkDerivation (finalAttrs: {
     mkdir -p "$out/bin"
     cp chainlink "$out/bin/chainlink"
 
-    # Set the rpath using patchelf
-    # patchelf --set-rpath "${wasmvm}/lib"
+    # Fix the install_name of the wasmvm dylib
+    install_name_tool -id "@rpath/libwasmvm.dylib" ${wasmvm}/lib/libwasmvm.dylib
   '';
 
-  # dontFixup = true;
+  dontFixup = true;
 
   # Metadata for the package
   meta = with lib; {

@@ -40,6 +40,8 @@ stdenv.mkDerivation (finalAttrs: {
     mkdir -p $out/lib
     cp libwasmvm/target/release/libwasmvm.dylib $out/lib
     cp libwasmvm/bindings.h $out/lib
+
+    chmod -R u+w $out
   '';
 
   dontFixup = true;
