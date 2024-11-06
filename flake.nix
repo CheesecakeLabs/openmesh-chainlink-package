@@ -79,12 +79,6 @@
             stdenv = pkgs.stdenv;
             fetchFromGitHub = pkgs.fetchFromGitHub;
           };
-          # chainlink_slim = import ./pkgs/chainlink/default1.nix {
-          #   lib = pkgs.lib;
-          #   fetchFromGitHub = pkgs.fetchFromGitHub;
-          #   buildGoModule = pkgs.buildGoModule;
-          #   gencodec = self.packages.${system}.gencodec;
-          # };
         }
       );
 
@@ -96,7 +90,6 @@
         nixpkgsFor.${system}.mkShell {
           nativeBuildInputs = [
             self.packages.${system}.gencodec
-            # self.packages.${system}.chainlink_slim
             self.packages.${system}.wasmvm
             self.packages.${system}.chainlink
             nixpkgsFor.${system}.go
