@@ -1,0 +1,87 @@
+{
+  "name": "Chainlink Node",
+  "desc": "Deploy and manage a Chainlink node to connect smart contracts with off-chain data, enabling decentralized oracle functionality.",
+  "longDesc": "**What is Chainlink?**\n\nChainlink is a decentralized oracle network that enables smart contracts on blockchains to securely connect to external data sources, APIs, and payment systems. Chainlink nodes are responsible for gathering off-chain data and delivering it on-chain in a trustless manner.\n\n**Key Features:**\n\n- **Decentralized Data Feeds:** Connect smart contracts to high-quality data feeds.\n- **Secure Connections:** Maintain secure connections with off-chain data sources.\n- **Scalability:** Support multiple oracle nodes to ensure data reliability and integrity.\n- **API Compatibility:** Easy integration with existing APIs for seamless data access.\n- **Flexible Configuration:** Configurable with various blockchain networks and environments.",
+  "useCases": "- **Developers:** Build smart contracts that require reliable external data.\n- **Enterprises:** Integrate smart contracts with off-chain systems for increased functionality.\n- **Researchers:** Test and validate decentralized oracle solutions.",
+  "support": "- **Community Forums:** Connect with other developers on the [Chainlink Community Forum](https://forum.chain.link/).\n- **Documentation:** Access extensive documentation on the [Chainlink Docs](https://docs.chain.link/).\n- **Troubleshooting:** Find solutions to common issues in the [Chainlink Support Center](https://support.chain.link/).",
+  "flakes": [
+    {
+      "name": "openmesh-chainlink-package",
+      "url": "github:CheesecakeLabs/openmesh-chainlink-package"
+    }
+  ],
+  "nixName": "chainlink",
+  "specs": {
+    "ram": 8192,
+    "storage": 1048576
+  },
+  "tags": ["Oracle", "Blockchain", "Data Feed", "Chainlink"],
+  "website": "https://chain.link/",
+  "implemented": false,
+  "logo": "https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png",
+  "options": [
+    {
+      "name": "enable",
+      "desc": "Enable the Chainlink Node.",
+      "nixName": "enable",
+      "type": "boolean",
+      "value": "false"
+    },
+    {
+      "name": "jsonOutput",
+      "desc": "Enable JSON output format instead of table.",
+      "nixName": "jsonOutput",
+      "type": "boolean",
+      "value": "false"
+    },
+    {
+      "name": "verbosity",
+      "desc": "Logging verbosity level (5=trace|4=debug|3=info|2=warn|1=error|0=crit).",
+      "nixName": "verbosity",
+      "type": "integer",
+      "value": 3
+    },
+    {
+      "name": "dataDir",
+      "desc": "Path to the data directory for Chainlink node.",
+      "nixName": "dataDir",
+      "type": "string",
+      "value": "/var/lib/chainlink"
+    },
+    {
+      "name": "keystorePath",
+      "desc": "Path to the keystore directory.",
+      "nixName": "keystorePath",
+      "type": "string",
+      "value": "/var/lib/chainlink/keystore"
+    },
+    {
+      "name": "passwordFile",
+      "desc": "Path to the file containing the keystore password.",
+      "nixName": "passwordFile",
+      "type": "string",
+      "value": "/var/lib/chainlink/password"
+    },
+    {
+      "name": "ethereumURL",
+      "desc": "Ethereum node URL for Chainlink to connect.",
+      "nixName": "ethereumURL",
+      "type": "string",
+      "value": "http://localhost:8545"
+    },
+    {
+      "name": "bridgeURL",
+      "desc": "URL of the bridge to connect with.",
+      "nixName": "bridgeURL",
+      "type": "null or string",
+      "value": null
+    },
+    {
+      "name": "extraArgs",
+      "desc": "Additional arguments to pass to the Chainlink CLI.",
+      "nixName": "extraArgs",
+      "type": "list of string",
+      "value": []
+    }
+  ]
+}
