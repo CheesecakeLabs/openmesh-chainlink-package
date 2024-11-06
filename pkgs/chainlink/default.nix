@@ -114,7 +114,7 @@ stdenv.mkDerivation (finalAttrs: {
     cp chainlink "$out/bin/chainlink"
 
     # Fix the install_name of the wasmvm dylib
-    install_name_tool -id "@rpath/libwasmvm.dylib" ${wasmvm}/lib/libwasmvm.dylib
+    # install_name_tool -id "@rpath/libwasmvm.dylib" "$out/lib/libwasmvm.dylib"
   '';
 
   dontFixup = true;
