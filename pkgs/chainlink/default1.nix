@@ -43,13 +43,13 @@ buildGoModule rec {
 
   src = fetchFromGitHub {
     owner = "smartcontractkit";
-    repo = finalAttrs.pname;
-    rev = "v${finalAttrs.version}";
+    repo = pname;
+    rev = "v${version}";
     sha256 = "sha256-ifu+5fzujIKsZQiOA+3bsh5L34dYfVFG6Nk3p+N5kO4=";
     fetchSubmodules = true;
   };
 
-  vendorHash = lib.fakeHash;
+  vendorHash = "sha256-s98pfExSofXZMq2l+ctGgab4gUQ87hUZUZX43PCWLP8=";
   proxyVendor = true;
 
   ldflags = [
@@ -100,9 +100,11 @@ buildGoModule rec {
 
   outputs = [ "out" ];
 
+  dontBuild = true;
+
   # Installation phase to install the Chainlink binary
   installPhase = ''
-    go install -v -ldflags "${joinStrings " " ldflags}" .
+    go install -v -ldflags "-X github.com/smartcontractkit/chainlink/v2/core/static.Version=2.18.0 -X github.com/smartcontractkit/chainlink/v2/core/static.Sha=0e855379b9f4ff54944f8ee9918b7bbfc0a67469" .
 
     # Copy the binary to the output directory
     mkdir -p "$out/bin"
