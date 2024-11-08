@@ -2,51 +2,53 @@
   lib,
   stdenv,
   fetchFromGitHub,
-  git,
-  go,
-  rustup,
-  libiconv
+  libiconv,
+  rustPlatform
 }:
 
-stdenv.mkDerivation (finalAttrs: {
+rustPlatform.buildRustPackage rec {
   pname = "wasmvm";
   version = "2.1.3";
 
   src = fetchFromGitHub {
     owner = "CosmWasm";
-    repo = finalAttrs.pname;
-    rev = "v${finalAttrs.version}";
+    repo = pname;
+    rev = "v${version}";
     sha256 = "sha256-oY2rfPs6EGrizj0/Hrc4cnxltOrbaIfANoM/SZttaEU=";
-    leaveDotGit = true;
+  };
+
+  cargoLock = {
+    lockFile = "${src}/libwasmvm/Cargo.lock";
+    outputHashes = {
+      "cosmwasm-core-2.1.4" = "sha256-stKVEC5jJpZhVCPnoeGApKIgpfV8wd+L5hmrhJy9hsU=";
+    };
   };
 
   nativeBuildInputs = [
-    git
-    go
-    rustup
     libiconv
   ];
 
-  preBuild = ''
-    # Override $HOME to be writable
-    export HOME=$(pwd)
+  buildPhase = ''
+    cd libwasmvm
+    cargo build --release
+    cd ..
+  '';
+
+  postPatch = ''
+    ln -s ${src}/libwasmvm/Cargo.lock Cargo.lock
   '';
 
   installPhase = ''
-    cd libwasmvm
-    rustup default stable
-    cargo build --release
-    cd ..
     mkdir -p $out/lib
-    cp libwasmvm/target/release/libwasmvm.dylib $out/lib
+    cp libwasmvm/target/release/libwasmvm.* $out/lib
     cp libwasmvm/bindings.h $out/lib
 
-    chmod -R u+w $out
+    ls -la $out/lib
   '';
 
   dontFixup = true;
+  doCheck = false;
 
-  # Metadata for the package
   meta = with lib; {
     description = "WasmVM is a WebAssembly Virtual Machine.";
     homepage = "https://github.com/CosmWasm/wasmvm";
@@ -54,4 +56,4 @@ stdenv.mkDerivation (finalAttrs: {
     maintainers = [ "CosmWasm" ];
     platforms = platforms.unix;
   };
-})
+}

@@ -37,10 +37,8 @@
             lib = pkgs.lib;
             stdenv = pkgs.stdenv;
             fetchFromGitHub = pkgs.fetchFromGitHub;
-            git = pkgs.git;
-            go = pkgs.go;
-            rustup = pkgs.rustup;
             libiconv = pkgs.libiconv;
+            rustPlatform = pkgs.rustPlatform;
           };
           chainlink = import ./pkgs/chainlink/default.nix {
             go = pkgs.go;
