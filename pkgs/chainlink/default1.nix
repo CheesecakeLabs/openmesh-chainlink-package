@@ -106,6 +106,9 @@ buildGoModule rec {
   installPhase = ''
     go install -v -ldflags "-X github.com/smartcontractkit/chainlink/v2/core/static.Version=2.18.0 -X github.com/smartcontractkit/chainlink/v2/core/static.Sha=0e855379b9f4ff54944f8ee9918b7bbfc0a67469" .
 
+    ls -la
+    ls -la bin
+
     # Copy the binary to the output directory
     # mkdir -p "$out/bin"
     # cp chainlink "$out/bin/chainlink"
