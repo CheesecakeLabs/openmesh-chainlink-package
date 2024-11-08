@@ -34,9 +34,10 @@
   lib,
   stdenv,
   fetchFromGitHub,
+  buildGoModule,
 }:
 
-stdenv.mkDerivation (finalAttrs: {
+buildGoModule rec {
   pname = "chainlink";
   version = "2.18.0";
 
@@ -47,6 +48,14 @@ stdenv.mkDerivation (finalAttrs: {
     sha256 = "sha256-ifu+5fzujIKsZQiOA+3bsh5L34dYfVFG6Nk3p+N5kO4=";
     fetchSubmodules = true;
   };
+
+  vendorHash = lib.fakeHash;
+  proxyVendor = true;
+
+  ldflags = [
+    "-X github.com/smartcontractkit/chainlink/v2/core/static.Version=2.18.0"
+    "-X github.com/smartcontractkit/chainlink/v2/core/static.Sha=0e855379b9f4ff54944f8ee9918b7bbfc0a67469"
+  ];
 
   nativeBuildInputs =
     [
@@ -91,23 +100,9 @@ stdenv.mkDerivation (finalAttrs: {
 
   outputs = [ "out" ];
 
-  # Set up environment and build flags
-  preBuild = ''
-    # Override $HOME to be writable
-    export HOME=$(pwd)
-
-    echo "Setting NPM strict-ssl to false for this build..."
-    npm config set strict-ssl false
-    npm config rm proxy 
-    npm config rm https-proxy
-  '';
-
   # Installation phase to install the Chainlink binary
   installPhase = ''
-    # run sed to replace GOFLAG lines
-    sed -i "" 's/GO_LDFLAGS := $(shell tools\/bin\/ldflags)//g' GNUmakefile && sed -i "" 's/\$(GO_LDFLAGS)/-X github.com\/smartcontractkit\/chainlink\/v2\/core\/static.Version=2.18.0 -X github.com\/smartcontractkit\/chainlink\/v2\/core\/static.Sha=0e855379b9f4ff54944f8ee9918b7bbfc0a67469/g' GNUmakefile
-
-    make install
+    go install -v -ldflags "${joinStrings " " ldflags}" .
 
     # Copy the binary to the output directory
     mkdir -p "$out/bin"
@@ -121,7 +116,7 @@ stdenv.mkDerivation (finalAttrs: {
     fi
 
     # Fix the install_name of the wasmvm dylib
-    install_name_tool -id "@rpath/$libwasmvm" "$out/lib/$libwasmvm"
+    # install_name_tool -id "@rpath/$libwasmvm" "$out/lib/$libwasmvm"
   '';
 
   dontFixup = true;
@@ -134,4 +129,4 @@ stdenv.mkDerivation (finalAttrs: {
     maintainers = [ "brunonascdev" ];
     platforms = platforms.unix;
   };
-})
+}

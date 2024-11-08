@@ -40,7 +40,44 @@
             libiconv = pkgs.libiconv;
             rustPlatform = pkgs.rustPlatform;
           };
-          chainlink = import ./pkgs/chainlink/default.nix {
+          # chainlink = import ./pkgs/chainlink/default.nix {
+          #   go = pkgs.go;
+          #   postgresql_16 = pkgs.postgresql_16;
+          #   git = pkgs.git;
+          #   python3 = pkgs.python3;
+          #   python3Packages = pkgs.python3Packages;
+          #   protobuf = pkgs.protobuf;
+          #   protoc-gen-go = pkgs.protoc-gen-go;
+          #   protoc-gen-go-grpc = pkgs.protoc-gen-go-grpc;
+          #   curl = pkgs.curl;
+          #   nodejs_20 = pkgs.nodejs_20;
+          #   pnpm = pkgs.pnpm;
+          #   go-ethereum = pkgs.go-ethereum;
+          #   go-mockery = pkgs.go-mockery;
+          #   gotools = pkgs.gotools;
+          #   gopls = pkgs.gopls;
+          #   delve = pkgs.delve;
+          #   golangci-lint = pkgs.golangci-lint;
+          #   github-cli = pkgs.github-cli;
+          #   jq = pkgs.jq;
+          #   libgcc = pkgs.libgcc;
+          #   coreutils = pkgs.coreutils;
+          #   toybox = pkgs.toybox;
+          #   gnumake = pkgs.gnumake;
+          #   gencodec = self.packages.${system}.gencodec;
+          #   patchelf = pkgs.patchelf;
+          #   libobjc = pkgs.darwin.libobjc;
+          #   wasmvm = self.packages.${system}.wasmvm;
+          #   pkg-config = pkgs.pkg-config;
+          #   libudev-zero = pkgs.libudev-zero;
+          #   libusb1 = pkgs.libusb1;
+          #   IOKit = pkgs.darwin.IOKit;
+          #   pkgs = pkgs;
+          #   lib = pkgs.lib;
+          #   stdenv = pkgs.stdenv;
+          #   fetchFromGitHub = pkgs.fetchFromGitHub;
+          # };
+          chainlink = import ./pkgs/chainlink/default1.nix {
             go = pkgs.go;
             postgresql_16 = pkgs.postgresql_16;
             git = pkgs.git;
@@ -76,6 +113,7 @@
             lib = pkgs.lib;
             stdenv = pkgs.stdenv;
             fetchFromGitHub = pkgs.fetchFromGitHub;
+            buildGoModule = pkgs.buildGoModule;
           };
         }
       );
