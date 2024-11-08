@@ -14,7 +14,7 @@ rustPlatform.buildRustPackage rec {
     owner = "CosmWasm";
     repo = pname;
     rev = "v${version}";
-    sha256 = "sha256-gYrK2EHhXnearJgLX38O6NLI6TfoGtpzA9be/7S/0ZU=";
+    sha256 = "15fipysgzpnn0drxl6p86zlwilp81rzmy2wqmjd7fpp187ccm2l1";
   };
 
   cargoLock = {
