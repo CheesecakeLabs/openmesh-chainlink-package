@@ -37,11 +37,7 @@
   buildGoModule,
 }:
 
-let
-  bins = [
-    "chainlink"
-  ];
-in buildGoModule rec {
+buildGoModule rec {
   pname = "chainlink";
   version = "2.18.0";
 
@@ -54,13 +50,32 @@ in buildGoModule rec {
 
   vendorHash = "sha256-s98pfExSofXZMq2l+ctGgab4gUQ87hUZUZX43PCWLP8=";
   proxyVendor = true;
+  dontFixup = true;
 
   ldflags = [
     "-X github.com/smartcontractkit/chainlink/v2/core/static.Version=2.18.0"
-    "-X github.com/smartcontractkit/chainlink/v2/core/static.Sha=0e855379b9f4ff54944f8ee9918b7bbfc0a67469"
+    "-X github.com/smartcontractkit/chainlink/v2/core/static.Sha=fb7d6e88ea3471909a4f9aa29992ec080bba9057"
   ];
 
-  nativeBuildInputs =
+  buildPhase = ''
+    go build -ldflags "${lib.concatStringsSep " " ldflags}" .
+
+    ls -la
+
+    # Copy the binary to the output directory
+    mkdir -p "$out/bin"
+    cp chainlink "$out/bin/chainlink"
+  '';
+
+  installPhase = ''
+    go install -ldflags "${lib.concatStringsSep " " ldflags}" .   
+  '';
+
+  postInstall = ''
+    cd contracts && pnpm i
+  '';
+
+    nativeBuildInputs =
     [
       go
       postgresql_16
@@ -101,37 +116,6 @@ in buildGoModule rec {
     IOKit
   ];
 
-  postInstall = lib.concatStringsSep "\n" (
-    builtins.map (bin: "mkdir -p \$${bin}/bin && mv $out/bin/${bin} \$${bin}/bin/ && ln -s \$${bin}/bin/${bin} $out/bin/") bins
-  );
-
-  outputs = [ "out" ] ++ bins;
-
-  # Installation phase to install the Chainlink binary
-  # installPhase = ''
-  #   go install -v -ldflags "-X github.com/smartcontractkit/chainlink/v2/core/static.Version=2.18.0 -X github.com/smartcontractkit/chainlink/v2/core/static.Sha=0e855379b9f4ff54944f8ee9918b7bbfc0a67469" .
-
-  #   ls -la
-  #   ls -la bin
-
-  #   # Copy the binary to the output directory
-  #   # mkdir -p "$out/bin"
-  #   # cp chainlink "$out/bin/chainlink"
-
-  #   # get the correct libwasmvm name for the platform
-  #   if [ "$(uname)" == "Darwin" ]; then
-  #     libwasmvm="libwasmvm.dylib"
-  #   else
-  #     libwasmvm="libwasmvm.so"
-  #   fi
-
-  #   # Fix the install_name of the wasmvm dylib
-  #   # install_name_tool -id "@rpath/$libwasmvm" "$out/lib/$libwasmvm"
-  # '';
-
-  dontFixup = true;
-
-  # Metadata for the package
   meta = with lib; {
     description = "Chainlink is a decentralized oracle network.";
     homepage = "https://github.com/smartcontractkit/chainlink";
