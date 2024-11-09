@@ -50,7 +50,7 @@ buildGoModule rec {
 
   vendorHash = "sha256-s98pfExSofXZMq2l+ctGgab4gUQ87hUZUZX43PCWLP8=";
   proxyVendor = true;
-  dontFixup = true;
+  # dontFixup = true;
 
   ldflags = [
     "-X github.com/smartcontractkit/chainlink/v2/core/static.Version=2.18.0"
